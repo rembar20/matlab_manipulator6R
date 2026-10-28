@@ -24,10 +24,7 @@ n = length(q_A);
 
 % Wektory czasu (znormalizowane [0,1])
 dt = 0.01;
-tau1 = 0:dt:1;
-tau2 = 0:dt:1;
-tau3 = 0:dt:1;
-
+tau = 0:dt:1;
 
 % Macierz A (14x14)
 A = [
@@ -47,4 +44,99 @@ A = [
     0, 0, 0, 0, 0,                      0, 0, 2/T_BdoC^2, 6/T_BdoC^2,            0, 0, -2/T_CdoD^2, 0, 0;                   % 14. ddq2(1) - ddq3(0) = 0
 ];
 
-end
+for i = 1:n
+    
+    B = [
+        q_A(i);      % 1.  pozycja startowa qA
+        0;           % 2.  prędkość startowa = 0
+        0;           % 3.  przyspieszenie startowe = 0
+        aux_qB(i);   % 4.  pozycja w punkcie B (koniec 1. segmentu)
+        aux_qB(i);   % 5.  pozycja w punkcie B (start 2. segmentu)
+        aux_qC(i);   % 6.  pozycja w punkcie C (koniec 2. segmentu)
+        aux_qC(i);   % 7.  pozycja w punkcie C (start 3. segmentu)
+        q_D(i);      % 8.  pozycja końcowa qD
+        0;           % 9.  prędkość końcowa = 0
+        0;           % 10. przyspieszenie końcowe = 0
+        0;           % 11. różnica prędkości w punkcie B = 0 (ciągłość)
+        0;           % 12. różnica przyspieszeń w punkcie B = 0 (ciągłość)
+        0;           % 13. różnica prędkości w punkcie C = 0 (ciągłość)
+        0            % 14. różnica przyspieszeń w punkcie C = 0 (ciągłość)
+    ];
+    X = inv(A)*B;
+
+    %wspolczynniki wielomianow
+    aAdoB = X(1:5);
+    aBdoC = X(6:9);
+    aCdoD = X(10:14);
+
+
+      
+    % --- (A -> B) ---
+    q1   = aAdoB(1) + aAdoB(2)*tau + aAdoB(3)*tau.^2 + aAdoB(4)*tau.^3 + aAdoB(5)*tau.^4;
+    dq1  = aAdoB(2) + 2*aAdoB(3)*tau + 3*aAdoB(4)*tau.^2 + 4*aAdoB(5)*tau.^3;
+    ddq1 = 2*aAdoB(3) + 6*aAdoB(4)*tau + 12*aAdoB(5)*tau.^2;
+    
+    % --- (B -> C) ---
+    q2   = aBdoC(1) + aBdoC(2)*tau + aBdoC(3)*tau.^2 + aBdoC(4)*tau.^3;
+    dq2  = aBdoC(2) + 2*aBdoC(3)*tau + 3*aBdoC(4)*tau.^2;
+    ddq2 = 2*aBdoC(3) + 6*aBdoC(4)*tau;
+    
+    % --- (C -> D) ---
+    q3   = aCdoD(1) + aCdoD(2)*tau + aCdoD(3)*tau.^2 + aCdoD(4)*tau.^3 + aCdoD(5)*tau.^4;
+    dq3  = aCdoD(2) + 2*aCdoD(3)*tau + 3*aCdoD(4)*tau.^2 + 4*aCdoD(5)*tau.^3;
+    ddq3 = 2*aCdoD(3) + 6*aCdoD(4)*tau + 12*aCdoD(5)*tau.^2;
+    
+    % Składanie fragmentów wykresu do jednej zmiennej
+    t_tot   = [t0 + tau*T_AdoB, t0 + T_AdoB + tau*T_BdoC, t0+ T_AdoB + T_BdoC + tau*T_CdoD];
+    q_tot   = [q1, q2, q3];
+    dq_tot  = [dq1, dq2, dq3];
+    ddq_tot = [ddq1, ddq2, ddq3];
+    
+% === RYSOWANIE WYKRESÓW DLA I-TEGO PRZEGUBU ===
+    if i <= 3
+        figure(1);
+        plot_index = i;
+    else
+        figure(2);
+        plot_index = i - 3;
+    end
+
+    % 1. Wykres Położenia (\theta)
+    subplot(3, 3, plot_index)
+    plot(t_tot, q_tot, 'r', 'LineWidth', 1.5)
+    hold on;
+    plot(t0 + T_AdoB, aux_qB(i), 'bo', 'MarkerFaceColor', 'b');          % Punkt B
+    plot(t0 + T_AdoB + T_BdoC, aux_qC(i), 'go', 'MarkerFaceColor', 'g'); % Punkt C
+    hold off;
+    xlabel('t [s]')
+    ylabel(['\it\theta_' num2str(i)])
+    title(['\it\theta_' num2str(i)])
+    grid on
+
+    % 2. Wykres Prędkości (d\theta)
+    subplot(3, 3, plot_index + 3)
+    plot(t_tot, dq_tot, 'r', 'LineWidth', 1.5)
+    xlabel('t [s]')
+    ylabel(['d\it\theta_' num2str(i)])
+    grid on
+
+    % 3. Wykres Przyspieszenia (dd\theta)
+    subplot(3, 3, plot_index + 6)
+    plot(t_tot, ddq_tot, 'r', 'LineWidth', 1.5)
+    xlabel('t [s]')
+    ylabel(['dd\it\theta_' num2str(i)])
+    grid on
+
+end 
+
+% === USTAWIENIA TYTUŁÓW I NAZW OKIEN ===
+figure(1)
+set(gcf, 'Name', 'Trajektoria 4-3-4 - Ramie', 'NumberTitle', 'off');
+sgtitle('Trajektorie ramienia (1-3) - Trajektoria 4-3-4');
+
+figure(2)
+set(gcf, 'Name', 'Trajektoria 4-3-4 - Nadgarstek', 'NumberTitle', 'off');
+sgtitle('Trajektorie nadgarstka (4-6) - Trajektoria 4-3-4');
+
+ftf = 1;
+end 

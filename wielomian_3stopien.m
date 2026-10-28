@@ -1,5 +1,5 @@
 function w_3stp = wielomian_3stopien(t0,tk,q_A,q_B)
-t=[t0:0.01:tk];
+t=t0:0.01:tk;
 tau=t./tk;
 %theta1 theta2 theta3
 k=size(q_A);
@@ -60,4 +60,5 @@ sgtitle('Trajektorie ramienia (1-3) - Wielomian 3 stopnia')
 figure(2)
 set(gcf,"Name", "W3Stp - Nadgarstek","NumberTitle", "off")
 sgtitle('Trajektorie nadgarstka (4-6) - Wielomian 3 stopnia')
+w_3stp = 0;
 end
