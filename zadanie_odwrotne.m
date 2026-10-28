@@ -11,23 +11,16 @@ A=[ cos(theta)   -sin(theta)*cos(alpha)    sin(theta)*sin(alpha)   l*cos(theta);
     
 end
 
-function A_RPY=matrixA_RPY(fi, vi, ksi, x, y, z)
+function A_ZYX = matrixA_ZYX(fi, vi, ksi, x, y, z)
+    A_ZYX = [ 
+        cos(fi)*cos(vi),  cos(fi)*sin(vi)*sin(ksi) - sin(fi)*cos(ksi),  cos(fi)*sin(vi)*cos(ksi) + sin(fi)*sin(ksi),  x;
+        sin(fi)*cos(vi),  sin(fi)*sin(vi)*sin(ksi) + cos(fi)*cos(ksi),  sin(fi)*sin(vi)*cos(ksi) - cos(fi)*sin(ksi),  y;
+       -sin(vi),          cos(vi)*sin(ksi),                             cos(vi)*cos(ksi),                             z;
+        0,                0,                                            0,                                            1];
 
-A_RPY=[cos(fi)*cos(vi)   cos(fi)*sin(vi)*sin(ksi)-sin(fi)*cos(ksi)   cos(fi)*sin(vi)*cos(ksi)+sin(fi)*sin(ksi)   x;
-       sin(fi)*cos(vi)   sin(fi)*sin(vi)*sin(ksi)+cos(fi)*cos(ksi)   sin(fi)*sin(vi)*cos(ksi)-cos(fi)*sin(ksi)   y;
-      -sin(vi)           cos(vi)*sin(ksi)                            cos(vi)*cos(ksi)                            z;
-       0                 0                                           0                                           1];
        
 end
 
-function A_ZYZ=matrixA_ZYZ(fi, vi, ksi, x, y, z)
-
-A_ZYZ=[cos(fi)*cos(vi)*cos(ksi)-sin(fi)*sin(ksi)   -cos(fi)*cos(vi)*sin(ksi)-sin(fi)*cos(ksi)   cos(fi)*sin(vi)   x;
-       sin(fi)*cos(vi)*cos(ksi)+cos(fi)*sin(ksi)   -sin(fi)*cos(vi)*sin(ksi)+cos(fi)*cos(ksi)   sin(fi)*sin(vi)   y;
-      -sin(vi)*cos(ksi)                             sin(vi)*sin(ksi)                             cos(vi)          z;
-       0                                            0                                            0                1];
-       
-end
 
 function [fi1,vi1,ksi1,fi2,vi2,ksi2]=orientation_angles(A)
 
@@ -40,9 +33,7 @@ ksi1=atan2(A(3,2),-A(3,1)); %around z" axis
 fi2=atan2(-A(2,3),-A(1,3)); %around Z axis
 vi2=atan2(-sqrt(A(1,3)*A(1,3)+A(2,3)*A(2,3)), A(3,3)) ; %around Y' axis
 ksi2=atan2(-A(3,2),-A(3,1)); %around Z" axis
-
 end
-
 
 InverseResult = zeros(6,8); % Stworzenie macierzy wynikowej
 % kolumny 1-2 Set 1, nadgarstek 1,2
@@ -51,10 +42,11 @@ InverseResult = zeros(6,8); % Stworzenie macierzy wynikowej
 % kolumny 7-8 Set 4, nadgarstek 1,2
 
 
-A60=matrixA_RPY(tool_fi, tool_vi, tool_ksi, x, y, z); % Wyznacz macierz A60 obracajac wokół RPY
+A60=matrixA_ZYX(tool_fi, tool_vi, tool_ksi, x, y, z); % Wyznacz macierz A60 obracajac wokół RPY
+Z_Directional = [A60(1,3), A60(2,3), A60(3,3)];
 %Wyliczanie pozycji środka nadgarstka (CoW - Center of Wirst)
-TCP_position=[x y z 1];
-CoW_position=TCP_position - dh_parameters.lambda6*[A60(1,3) A60(2,3) A60(3,3) A60(4,3)] ;% vector of position of the wirst center
+TCP_position=[x y z];
+CoW_position=TCP_position - dh_parameters.lambda6*Z_Directional ;% vector of position of the wirst center
 X_CoW=CoW_position(1); Y_CoW=CoW_position(2); Z_CoW=CoW_position(3);
 
 %Obliczenia dla Theta 1

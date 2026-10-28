@@ -24,10 +24,16 @@ danemanipulatora
 % kolumny 5-6 Set 3, nadgarstek 1,2
 % kolumny 7-8 Set 4, nadgarstek 1,2
 %wszystkie wartosci kątów są w RADIANACH!!!!
-ThetasP_A = zadanie_odwrotne(p_A(1),p_A(2),p_A(3),alpha_A,beta_A,gamma_A,dh_params)
-ThetasP_B = zadanie_odwrotne(p_B(1),p_B(2),p_B(3),alpha_B,beta_B,gamma_B,dh_params)
+ThetasP_A = zadanie_odwrotne(p_A(1),p_A(2),p_A(3),alpha_A,beta_A,gamma_A,dh_params) %#ok<NOPTS>
+ThetasP_B = zadanie_odwrotne(p_B(1),p_B(2),p_B(3),alpha_B,beta_B,gamma_B,dh_params);
+for i = 1:8
+fprintf("\nKOLUMNA " + i + " \n")
+[A60_A_calc, pos_A_calc, orient_A_calc] = zadanie_proste(ThetasP_A(:,i),dh_params);
+disp("Pozycja A")
+pos_A_calc %#ok<NOPTS>
+disp("Orientacja A")
+rad2deg(orient_A_calc)
+end
 wybor_konfiguracji
 spr_macierzy
-planowanie_trajektorii
-
-disp('na potrzeby testow usuniete z daneplanowania matrix_Bxyz DODAC POTEM!!!!!!!!')
+%planowanie_trajektorii
