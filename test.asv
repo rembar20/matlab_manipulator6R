@@ -1,0 +1,42 @@
+clc
+clear
+close all
+function setDefaults = SetDefaults(CellArray)
+    setDefaults = {'','',''};
+    for i = 1:3
+    setDefaults{i} = CellArray {i};
+    end
+end
+
+
+ListaNazwDanych = {'Wspolrzedne Punktu przejsciowego [mm]', 'Orientacja punktu przejsciowego [deg]', 'Czas przejsciowy [s]'};
+dimension = [1 50];
+defaultValues = {'','',''};
+poprawneDane = false;
+
+while ~poprawneDane
+    InputValues = inputdlg(ListaNazwDanych, "Parametry punktu przejsciowego", dimension, defaultValues);
+    Test_Poprawnosci = 0;
+    if(~isempty(InputValues))
+        for i = 1:3
+         if(isempty(InputValues{i}))
+            disp("Nie wprowadzono wszystkich wartości wejściowych!")
+            defaultValues = SetDefaults(InputValues);
+            break;
+         else 
+            Test_Poprawnosci = Test_Poprawnosci + 1; %3 jezeli wszystkie dane sa wypelnione
+         end
+        end
+        
+        aux_Posit = str2num(InputValues{1})
+        aux_Orient = str2num(InputValues{2})
+        aux_time = str2num(InputValues{3})
+
+        if(isempty(aux_Posit)   || isempty(aux_Orient) || isempty(aux_time))
+            disp("Wprowadzone wartości są niepoprawne!")
+            defaultValues = SetDefaults(InputValues);
+        else
+            Test_Poprawnosci = Test_Poprawnosci + 1 % +1 j
+        end
+    end
+ end

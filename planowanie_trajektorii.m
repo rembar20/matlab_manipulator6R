@@ -7,17 +7,13 @@
 while(1)
     user_input =  menu('Wybierz Opcje:', 'Wielomian 3 stopnia', 'Wielomian 5 stopnia', 'Wielomian 7 stopnia', '4 3 4', 'Wyjscie');
     if(user_input == 1)
-        disp(user_input) %disp s¹ dla debugu, mozna usuanc potem
         wielomian_3stopien(t0,tk,ThetasP_A(:,1)',ThetasP_B(:,1)')
     elseif(user_input == 2)
-        disp(user_input)
         wielomian_5stopien(t0,tk,ThetasP_A(:,1)',ThetasP_B(:,1)')
     elseif(user_input == 3)
-        disp(user_input)
         wielomian_7stopien(t0,tk,ThetasP_A(:,1)',ThetasP_B(:,1)')
     elseif(user_input == 4)
-        disp(user_input)
-        cztery_trzy_cztery(t0,tk,ThetasP_A(:,1)',ThetasP_B(:,1)')
+        cztery_trzy_cztery(t0,tk,ThetasP_A(:,1)',ThetasP_B(:,1)',1, dh_params)
     elseif(user_input == 5)
         close all
         break
