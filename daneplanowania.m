@@ -8,6 +8,12 @@ function val = input_liczba(prompt_text)
     end
 end
 
+function matrixZYX = matrixZYX(alpha, beta, gamma) 
+matrixZYX = [
+    cos(alpha)*cos(beta),  cos(alpha)*sin(beta)*sin(gamma) - sin(alpha)*cos(gamma),  cos(alpha)*sin(beta)*cos(gamma) + sin(alpha)*sin(gamma);
+    sin(alpha)*cos(beta),  sin(alpha)*sin(beta)*sin(gamma) + cos(alpha)*cos(gamma),  sin(alpha)*sin(beta)*cos(gamma) - cos(alpha)*sin(gamma);
+   -sin(beta),          cos(beta)*sin(gamma),                             cos(beta)*cos(gamma)];
+end
 %% 
 %dane planowania
 %z klawiatury
@@ -80,6 +86,12 @@ B_DegArray  = [deg_B_alpha; %alpha
                deg_B_gamma]; %gamma];
 alpha_A = deg2rad(A_DegArray(1)) ; beta_A = deg2rad(A_DegArray(2)); gamma_A = deg2rad(A_DegArray(3));
 alpha_B = deg2rad(B_DegArray(1)) ; beta_B = deg2rad(B_DegArray(2)); gamma_B = deg2rad(B_DegArray(3));
+
+
+orientation_matrix_A = matrixZYX(A_DegArray(1),A_DegArray(2),A_DegArray(3));
+orientation_matrix_B = matrixZYX(B_DegArray(1),B_DegArray(2),B_DegArray(3));
+
+
 % Wypisanie wartosci jezeli ustawiono wartosci domyslne
 string_array = ["alpha","beta","gamma";
                "X","Y","Z"];
@@ -90,7 +102,7 @@ if(~strcmp(manual_input, "Y"))
     end
      fprintf('\n') % nowa linia
     for i = 1:3
-        disp("Wspolrzedna " + string_array(2,i) + "punktu koncowego p_B_" + lower(string_array(2,i)) + " = " + num2str(p_B(i)));
+        disp("Wspolrzedna " + string_array(2,i) + " punktu koncowego p_B_" + lower(string_array(2,i)) + " = " + num2str(p_B(i)));
     end
      fprintf('\n') % nowa linia
     for i = 1:3
@@ -105,7 +117,9 @@ if(~strcmp(manual_input, "Y"))
     pause(1); %pauza na 3 sekundy, zeby mozna bylo zobaczyc ze cos sie stalo w konsoli
 end
 
-%wyznaczenie macierzy orientacji w po³o¿eniu A i B]
-%B_A=matrix_Bxyz(alpha_A,beta_A,gamma_A)
-%B_B=matrix_Bxyz(alpha_B,beta_B,gamma_B)
+%wyznaczenie macierzy orientacji w po³o¿eniu A i B
+disp("Macierz orientacji A:")
+disp(num2str(orientation_matrix_A))
+disp("Macierz orientacji B:")
+disp(num2str(orientation_matrix_B))
 
