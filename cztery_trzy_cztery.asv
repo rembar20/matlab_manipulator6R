@@ -1,0 +1,97 @@
+function ftf = cztery_trzy_cztery(t0, tk, q_A, q_D,wybrana_konfiguracja, dh_params)
+%RAMIE IDZIE Z PUNKTU A (Punkt A definiowany w danych planowania) do punktu
+%D (punktu koncowego) przez 2 punkty pomocnicze (B i C)
+
+%Definiowanie punktu B
+[pozycja_pomocnicza_B, orientacja_pomocnicza_B, czas_przejsciowy_B] = DanePunktuPomocniczego(1);
+AuxPoint_B = zadanie_odwrotne(pozycja_pomocnicza_B(1),pozycja_pomocnicza_B(2),pozycja_pomocnicza_B(3),orientacja_pomocnicza_B(1),orientacja_pomocnicza_B(2),orientacja_pomocnicza_B(3),dh_params);
+aux_qB = AuxPoint_B(:,wybrana_konfiguracja);
+
+%Definiowanie punktu C
+
+[pozycja_pomocnicza_C, orientacja_pomocnicza_C, czas_przejsciowy_C] = DanePunktuPomocniczego(2);
+AuxPoint_C = zadanie_odwrotne(pozycja_pomocnicza_C(1),pozycja_pomocnicza_C(2),pozycja_pomocnicza_C(3),orientacja_pomocnicza_C(1),orientacja_pomocnicza_C(2),orientacja_pomocnicza_C(3),dh_params);
+aux_qC = AuxPoint_C(:,wybrana_konfiguracja);
+
+%Definicja czasow przejsciowych
+
+T_AdoB = czas_przejsciowy_B - t0;
+T_BdoC = czas_przejsciowy_C - czas_przejsciowy_B;
+T_CdoD = tk - czas_przejsciowy_C;
+
+% Ilosc przegubow
+n = length(q_A);
+
+% Wektory czasu (znormalizowane [0,1])
+dt = 0.01;
+tau = 0:dt:1;
+
+% Macierz A (14x14)
+A = [
+    1, 0, 0, 0, 0,                      0, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 1.  q1(0) = qA
+    0, 1/T_AdoB, 0, 0, 0,               0, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 2.  dq1(0) = 0
+    0, 0, 2/T_AdoB^2, 0, 0,             0, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 3.  ddq1(0) = 0
+    1, 1, 1, 1, 1,                      0, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 4.  q1(1) = qB
+    0, 0, 0, 0, 0,                      1, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 5.  q2(0) = qB
+    0, 0, 0, 0, 0,                      1, 1, 1, 1,                      0, 0, 0, 0, 0;                                     % 6.  q2(1) = qC
+    0, 0, 0, 0, 0,                      0, 0, 0, 0,                      1, 0, 0, 0, 0;                                     % 7.  q3(0) = qC
+    0, 0, 0, 0, 0,                      0, 0, 0, 0,                      1, 1, 1, 1, 1;                                     % 8.  q3(1) = qD
+    0, 0, 0, 0, 0,                      0, 0, 0, 0,                      0, 1/T_CdoD, 2/T_CdoD, 3/T_CdoD, 4/T_CdoD;         % 9.  dq3(1) = 0
+    0, 0, 0, 0, 0,                      0, 0, 0, 0,                      0, 0, 2/T_CdoD^2, 6/T_CdoD^2, 12/T_CdoD^2;         % 10. ddq3(1) = 0
+    0, 1/T_AdoB, 2/T_AdoB, 3/T_AdoB, 4/T_AdoB,      0, -1/T_BdoC, 0, 0,                  0, 0, 0, 0, 0;                     % 11. dq1(1) - dq2(0) = 0
+    0, 0, 2/T_AdoB^2, 6/T_AdoB^2, 12/T_AdoB^2,      0, 0, -2/T_BdoC^2, 0,                0, 0, 0, 0, 0;                     % 12. ddq1(1) - ddq2(0) = 0
+    0, 0, 0, 0, 0,                      0, 1/T_BdoC, 2/T_BdoC, 3/T_BdoC,             0, -1/T_CdoD, 0, 0, 0;                 % 13. dq2(1) - dq3(0) = 0
+    0, 0, 0, 0, 0,                      0, 0, 2/T_BdoC^2, 6/T_BdoC^2,            0, 0, -2/T_CdoD^2, 0, 0;                   % 14. ddq2(1) - ddq3(0) = 0
+];
+
+for i = 1:n
+    
+    B = [
+        q_A(i);      % 1.  pozycja startowa qA
+        0;           % 2.  prędkość startowa = 0
+        0;           % 3.  przyspieszenie startowe = 0
+        aux_qB(i);   % 4.  pozycja w punkcie B (koniec 1. segmentu)
+        aux_qB(i);   % 5.  pozycja w punkcie B (start 2. segmentu)
+        aux_qC(i);   % 6.  pozycja w punkcie C (koniec 2. segmentu)
+        aux_qC(i);   % 7.  pozycja w punkcie C (start 3. segmentu)
+        q_D(i);      % 8.  pozycja końcowa qD
+        0;           % 9.  prędkość końcowa = 0
+        0;           % 10. przyspieszenie końcowe = 0
+        0;           % 11. różnica prędkości w punkcie B = 0 (ciągłość)
+        0;           % 12. różnica przyspieszeń w punkcie B = 0 (ciągłość)
+        0;           % 13. różnica prędkości w punkcie C = 0 (ciągłość)
+        0            % 14. różnica przyspieszeń w punkcie C = 0 (ciągłość)
+    ];
+    X = inv(M)*B;
+
+    %wspolczynniki wielomianow
+    aAdoB = X(1:5);
+    aBdoC = X(6:9);
+    aCdoD = X(10:14);
+
+
+      
+    % --- (A -> B) ---
+    q1   = aAdoB(1) + aAdoB(2)*tau + aAdoB(3)*tau.^2 + aAdoB(4)*tau.^3 + aAdoB(5)*tau.^4;
+    dq1  = aAdoB(2) + 2*aAdoB(3)*tau + 3*aAdoB(4)*tau.^2 + 4*aAdoB(5)*tau.^3;
+    ddq1 = 2*aAdoB(3) + 6*aAdoB(4)*tau + 12*aAdoB(5)*tau.^2;
+    
+    % --- (B -> C) ---
+    q2   = aBdoC(1) + aBdoC(2)*tau + aBdoC(3)*tau.^2 + aBdoC(4)*tau.^3;
+    dq2  = aBdoC(2) + 2*aBdoC(3)*tau + 3*aBdoC(4)*tau.^2;
+    ddq2 = 2*aBdoC(3) + 6*aBdoC(4)*tau;
+    
+    % --- (C -> D) ---
+    q3   = aCdoD(1) + aCdoD(2)*tau + aCdoD(3)*tau.^2 + aCdoD(4)*tau.^3 + aCdoD(5)*tau.^4;
+    dq3  = aCdoD(2) + 2*aCdoD(3)*tau + 3*aCdoD(4)*tau.^2 + 4*aCdoD(5)*tau.^3;
+    ddq3 = 2*aCdoD(3) + 6*aCdoD(4)*tau + 12*aCdoD(5)*tau.^2;
+    
+    % Składanie fragmentów wykresu do jednej zmiennej
+    t_tot   = [tau*T_AdoB, T_AdoB + tau*T_BdoC, T_AdoB + T_BdoC + tau*T_CdoD];
+    q_tot   = [q1, q2, q3];
+    dq_tot  = [dq1, dq2, dq3];
+    ddq_tot = [ddq1, ddq2, ddq3];
+    
+end
+
+end

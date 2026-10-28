@@ -1,163 +1,142 @@
-function ctc = cztery_trzy_cztery(t0, tk, q_A, q_B)
+function ftf = cztery_trzy_cztery(t0, tk, q_A, q_D,wybrana_konfiguracja, dh_params)
+%RAMIE IDZIE Z PUNKTU A (Punkt A definiowany w danych planowania) do punktu
+%D (punktu koncowego) przez 2 punkty pomocnicze (B i C)
 
-% Planowanie trajektorii wielomianami 4-3-4 (stopnie 4, 3, 4) w przestrzeni przegubow.
-% Odcinek 1 (stopien 4): A -> P1,  odcinek 2 (stopien 3): P1 -> P2,  odcinek 3 (stopien 4): P2 -> B.
-% Kazdy odcinek ma wlasny czas znormalizowany tau_i = (t - t_i)/T_i in [0,1].
-% 14 niewiadomych na przegub (5+4+5) i 14 warunkow:
-%  q1(0)=q_A, dq1(0)=0, ddq1(0)=0;  q1(1)=P1, q2(0)=P1, ciaglosc dq i ddq w P1;
-%  q2(1)=P2, q3(0)=P2, ciaglosc dq i ddq w P2;  q3(1)=q_B, dq3(1)=0, ddq3(1)=0.
-% Punkty posrednie P1, P2 = q_A + ulamek*(q_B - q_A) (kazdy przegub), w chwilach t1, t2.
+%Definiowanie punktu B
+[pozycja_pomocnicza_B, orientacja_pomocnicza_B, czas_przejsciowy_B] = DanePunktuPomocniczego(1);
+AuxPoint_B = zadanie_odwrotne(pozycja_pomocnicza_B(1),pozycja_pomocnicza_B(2),pozycja_pomocnicza_B(3),orientacja_pomocnicza_B(1),orientacja_pomocnicza_B(2),orientacja_pomocnicza_B(3),dh_params);
+aux_qB = AuxPoint_B(:,wybrana_konfiguracja);
 
-q_A = q_A(:)'; q_B = q_B(:)';
-n = numel(q_A);
-T = tk - t0;
+%Definiowanie punktu C
 
-% --- parametry (z klawiatury; Enter = domyslne) ---
+[pozycja_pomocnicza_C, orientacja_pomocnicza_C, czas_przejsciowy_C] = DanePunktuPomocniczego(2);
+AuxPoint_C = zadanie_odwrotne(pozycja_pomocnicza_C(1),pozycja_pomocnicza_C(2),pozycja_pomocnicza_C(3),orientacja_pomocnicza_C(1),orientacja_pomocnicza_C(2),orientacja_pomocnicza_C(3),dh_params);
+aux_qC = AuxPoint_C(:,wybrana_konfiguracja);
 
-dom_czas = [0.25 0.50 0.25];   % podzial czasu T na 3 odcinki (ulamki)
-dom_poz  = [0.15 0.85];        % polozenie punktow posrednich jako ulamek przemieszczenia
-disp('Wielomiany 4-3-4: parametry (Enter = wartosci domyslne)')
-odp = strtrim(input(sprintf('Podzial czasu na 3 odcinki [%g %g %g] (ulamki, np. 0.25 0.5 0.25): ', dom_czas), 's'));
-frakcje = str2num(odp); %#ok<ST2NM>
+%Definicja czasow przejsciowych
 
-if numel(frakcje) ~= 3 || any(frakcje <= 0) || any(~isfinite(frakcje))
-    if ~isempty(odp)
-        disp('[!] Niepoprawne dane, przyjmuje wartosci domyslne.');
-    end
-    frakcje = dom_czas;
-end
+T_AdoB = czas_przejsciowy_B - t0;
+T_BdoC = czas_przejsciowy_C - czas_przejsciowy_B;
+T_CdoD = tk - czas_przejsciowy_C;
 
-frakcje = frakcje / sum(frakcje);
-odp = strtrim(input(sprintf('Polozenia posrednie P1 P2 jako ulamek przemieszczenia [%g %g]: ', dom_poz), 's'));
-pozycje = str2num(odp); %#ok<ST2NM>
+% Ilosc przegubow
+n = length(q_A);
 
-if numel(pozycje) ~= 2 || any(~isfinite(pozycje))
-    if ~isempty(odp)
-        disp('[!] Niepoprawne dane, przyjmuje wartosci domyslne.'); 
-    end
-    pozycje = dom_poz;
-end
+% Wektory czasu (znormalizowane [0,1])
+dt = 0.01;
+tau = 0:dt:1;
 
-T1 = frakcje(1)*T; T2 = frakcje(2)*T; T3 = frakcje(3)*T;
-tb1 = t0 + T1; tb2 = tb1 + T2;
-P1 = q_A + pozycje(1)*(q_B - q_A);
-P2 = q_A + pozycje(2)*(q_B - q_A);
-
-fprintf('Czasy odcinkow: T1=%.3f s, T2=%.3f s, T3=%.3f s (punkty posrednie w t=%.3f s i t=%.3f s)\n', T1, T2, T3, tb1, tb2);
-
-% --- macierz warunkow (taka sama dla kazdego przegubu) ---
-M = zeros(14,14);
-z = @(n_, tau_, d_) wiersz_potegowy(n_, tau_, d_);   % wiersz pochodnej d-tej wielomianu stopnia n_ w tau_
-c1 = 1:5; c2 = 6:9; c3 = 10:14;                     % kolumny niewiadomych odcinkow 1,2,3
-M(1,c1)  = z(4,0,0);                                % q1(0)
-M(2,c1)  = z(4,0,1)/T1;                             % dq1(0)
-M(3,c1)  = z(4,0,2)/T1^2;                           % ddq1(0)
-M(4,c1)  = z(4,1,0);                                % q1(1) = P1
-M(5,c2)  = z(3,0,0);                                % q2(0) = P1
-M(6,c1)  = z(4,1,1)/T1;   M(6,c2)  = -z(3,0,1)/T2;     % ciaglosc predkosci w P1
-M(7,c1)  = z(4,1,2)/T1^2; M(7,c2)  = -z(3,0,2)/T2^2;   % ciaglosc przyspieszenia w P1
-M(8,c2)  = z(3,1,0);                                % q2(1) = P2
-M(9,c3)  = z(4,0,0);                                % q3(0) = P2
-M(10,c2) = z(3,1,1)/T2;   M(10,c3) = -z(4,0,1)/T3;     % ciaglosc predkosci w P2
-M(11,c2) = z(3,1,2)/T2^2; M(11,c3) = -z(4,0,2)/T3^2;   % ciaglosc przyspieszenia w P2
-M(12,c3) = z(4,1,0);                                % q3(1) = q_B
-M(13,c3) = z(4,1,1)/T3;                             % dq3(1) = 0
-M(14,c3) = z(4,1,2)/T3^2;                           % ddq3(1) = 0
-
-t = linspace(t0, tk, round(T/0.01) + 1);
-s1 = t <= tb1; s2 = t > tb1 & t <= tb2; s3 = t > tb2;
-a1 = zeros(n,5); a2 = zeros(n,4); a3 = zeros(n,5);
-Q = zeros(n, numel(t)); dQ = Q; ddQ = Q;
+% Macierz A (14x14)
+A = [
+    1, 0, 0, 0, 0,                      0, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 1.  q1(0) = qA
+    0, 1/T_AdoB, 0, 0, 0,               0, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 2.  dq1(0) = 0
+    0, 0, 2/T_AdoB^2, 0, 0,             0, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 3.  ddq1(0) = 0
+    1, 1, 1, 1, 1,                      0, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 4.  q1(1) = qB
+    0, 0, 0, 0, 0,                      1, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 5.  q2(0) = qB
+    0, 0, 0, 0, 0,                      1, 1, 1, 1,                      0, 0, 0, 0, 0;                                     % 6.  q2(1) = qC
+    0, 0, 0, 0, 0,                      0, 0, 0, 0,                      1, 0, 0, 0, 0;                                     % 7.  q3(0) = qC
+    0, 0, 0, 0, 0,                      0, 0, 0, 0,                      1, 1, 1, 1, 1;                                     % 8.  q3(1) = qD
+    0, 0, 0, 0, 0,                      0, 0, 0, 0,                      0, 1/T_CdoD, 2/T_CdoD, 3/T_CdoD, 4/T_CdoD;         % 9.  dq3(1) = 0
+    0, 0, 0, 0, 0,                      0, 0, 0, 0,                      0, 0, 2/T_CdoD^2, 6/T_CdoD^2, 12/T_CdoD^2;         % 10. ddq3(1) = 0
+    0, 1/T_AdoB, 2/T_AdoB, 3/T_AdoB, 4/T_AdoB,      0, -1/T_BdoC, 0, 0,                  0, 0, 0, 0, 0;                     % 11. dq1(1) - dq2(0) = 0
+    0, 0, 2/T_AdoB^2, 6/T_AdoB^2, 12/T_AdoB^2,      0, 0, -2/T_BdoC^2, 0,                0, 0, 0, 0, 0;                     % 12. ddq1(1) - ddq2(0) = 0
+    0, 0, 0, 0, 0,                      0, 1/T_BdoC, 2/T_BdoC, 3/T_BdoC,             0, -1/T_CdoD, 0, 0, 0;                 % 13. dq2(1) - dq3(0) = 0
+    0, 0, 0, 0, 0,                      0, 0, 2/T_BdoC^2, 6/T_BdoC^2,            0, 0, -2/T_CdoD^2, 0, 0;                   % 14. ddq2(1) - ddq3(0) = 0
+];
 
 for i = 1:n
-    b = [q_A(i); 0; 0; P1(i); P1(i); 0; 0; P2(i); P2(i); 0; 0; q_B(i); 0; 0];
-    x = M \ b;
-    a1(i,:) = x(c1)'; a2(i,:) = x(c2)'; a3(i,:) = x(c3)';
-    [Q(i,s1), dQ(i,s1), ddQ(i,s1)] = oblicz_wielomian(a1(i,:), (t(s1)-t0)/T1, T1);
-    [Q(i,s2), dQ(i,s2), ddQ(i,s2)] = oblicz_wielomian(a2(i,:), (t(s2)-tb1)/T2, T2);
-    [Q(i,s3), dQ(i,s3), ddQ(i,s3)] = oblicz_wielomian(a3(i,:), (t(s3)-tb2)/T3, T3);
-end
+    
+    B = [
+        q_A(i);      % 1.  pozycja startowa qA
+        0;           % 2.  prędkość startowa = 0
+        0;           % 3.  przyspieszenie startowe = 0
+        aux_qB(i);   % 4.  pozycja w punkcie B (koniec 1. segmentu)
+        aux_qB(i);   % 5.  pozycja w punkcie B (start 2. segmentu)
+        aux_qC(i);   % 6.  pozycja w punkcie C (koniec 2. segmentu)
+        aux_qC(i);   % 7.  pozycja w punkcie C (start 3. segmentu)
+        q_D(i);      % 8.  pozycja końcowa qD
+        0;           % 9.  prędkość końcowa = 0
+        0;           % 10. przyspieszenie końcowe = 0
+        0;           % 11. różnica prędkości w punkcie B = 0 (ciągłość)
+        0;           % 12. różnica przyspieszeń w punkcie B = 0 (ciągłość)
+        0;           % 13. różnica prędkości w punkcie C = 0 (ciągłość)
+        0            % 14. różnica przyspieszeń w punkcie C = 0 (ciągłość)
+    ];
+    X = inv(A)*B;
 
-wypisz_wspolczynniki(a1, sprintf('Wielomian 4 stopnia - odcinek 1 (tau = (t-t0)/T1, T1=%.3f s):', T1));
-wypisz_wspolczynniki(a2, sprintf('Wielomian 3 stopnia - odcinek 2 (tau = (t-t1)/T2, T2=%.3f s):', T2));
-wypisz_wspolczynniki(a3, sprintf('Wielomian 4 stopnia - odcinek 3 (tau = (t-t2)/T3, T3=%.3f s):', T3));
-rysuj_charakterystyki(t, Q, dQ, ddQ, 'Wielomiany 4-3-4', 7);
+    %wspolczynniki wielomianow
+    aAdoB = X(1:5);
+    aBdoC = X(6:9);
+    aCdoD = X(10:14);
 
-end
 
-function w = wiersz_potegowy(n, tau, d)
-% wiersz [d-ta pochodna tau^k po tau], k = 0..n, obliczona w tau
-w = zeros(1, n+1)
-for k = d:n
-    w(k+1) = factorial(k)/factorial(k-d) * tau^(k-d);
-end
-end
-
-function [q, dq, ddq] = oblicz_wielomian(a, tau, Ti)
-% Oblicza pozycje, predkosc i przyspieszenie dla danych wspolczynnikow a w czasie tau w [0,1]
-deg = numel(a) - 1;
-q = zeros(size(tau));
-dq = zeros(size(tau));
-ddq = zeros(size(tau));
-
-for k = 0:deg
-    q = q + a(k+1) * tau.^k;
-    if k >= 1
-        dq = dq + k * a(k+1) * tau.^(k-1);
-    end
-    if k >= 2
-        ddq = ddq + k * (k-1) * a(k+1) * tau.^(k-2);
-    end
-end
-dq = dq / Ti;
-ddq = ddq / (Ti^2);
-end
-
-function wypisz_wspolczynniki(a, naglowek)
-disp(naglowek);
-[n, deg_plus_1] = size(a);
-for i = 1:n
-    fprintf('Przegub %d: ', i);
-    for k = 1:deg_plus_1
-        fprintf('a%d=%.4f ', k-1, a(i,k));
-    end
-    fprintf('\n');
-end
-end
-
-function rysuj_charakterystyki(t, Q, dQ, ddQ, tytul_glowny, fig_offset)
-n = size(Q, 1);
-for i = 1:n
+      
+    % --- (A -> B) ---
+    q1   = aAdoB(1) + aAdoB(2)*tau + aAdoB(3)*tau.^2 + aAdoB(4)*tau.^3 + aAdoB(5)*tau.^4;
+    dq1  = aAdoB(2) + 2*aAdoB(3)*tau + 3*aAdoB(4)*tau.^2 + 4*aAdoB(5)*tau.^3;
+    ddq1 = 2*aAdoB(3) + 6*aAdoB(4)*tau + 12*aAdoB(5)*tau.^2;
+    
+    % --- (B -> C) ---
+    q2   = aBdoC(1) + aBdoC(2)*tau + aBdoC(3)*tau.^2 + aBdoC(4)*tau.^3;
+    dq2  = aBdoC(2) + 2*aBdoC(3)*tau + 3*aBdoC(4)*tau.^2;
+    ddq2 = 2*aBdoC(3) + 6*aBdoC(4)*tau;
+    
+    % --- (C -> D) ---
+    q3   = aCdoD(1) + aCdoD(2)*tau + aCdoD(3)*tau.^2 + aCdoD(4)*tau.^3 + aCdoD(5)*tau.^4;
+    dq3  = aCdoD(2) + 2*aCdoD(3)*tau + 3*aCdoD(4)*tau.^2 + 4*aCdoD(5)*tau.^3;
+    ddq3 = 2*aCdoD(3) + 6*aCdoD(4)*tau + 12*aCdoD(5)*tau.^2;
+    
+    % Składanie fragmentów wykresu do jednej zmiennej
+    t_tot   = [t0 + tau*T_AdoB, t0 + T_AdoB + tau*T_BdoC, t0+ T_AdoB + T_BdoC + tau*T_CdoD];
+    q_tot   = [q1, q2, q3];
+    dq_tot  = [dq1, dq2, dq3];
+    ddq_tot = [ddq1, ddq2, ddq3];
+    
+% === RYSOWANIE WYKRESÓW DLA I-TEGO PRZEGUBU ===
     if i <= 3
-        figure(fig_offset);
-        plot_idx = i;
+        figure(1);
+        plot_index = i;
     else
-        figure(fig_offset + 1);
-        plot_idx = i - 3;
+        figure(2);
+        plot_index = i - 3;
     end
 
-    subplot(3, 3, plot_idx)
-    plot(t, Q(i,:), 'r', 'LineWidth', 1.5)
+    % 1. Wykres Położenia (\theta)
+    subplot(3, 3, plot_index)
+    plot(t_tot, q_tot, 'r', 'LineWidth', 1.5)
+    hold on;
+    plot(t0 + T_AdoB, aux_qB(i), 'bo', 'MarkerFaceColor', 'b');          % Punkt B
+    plot(t0 + T_AdoB + T_BdoC, aux_qC(i), 'go', 'MarkerFaceColor', 'g'); % Punkt C
+    hold off;
     xlabel('t [s]')
     ylabel(['\it\theta_' num2str(i)])
     title(['\it\theta_' num2str(i)])
     grid on
 
-    subplot(3, 3, plot_idx + 3)
-    plot(t, dQ(i,:), 'r', 'LineWidth', 1.5)
+    % 2. Wykres Prędkości (d\theta)
+    subplot(3, 3, plot_index + 3)
+    plot(t_tot, dq_tot, 'r', 'LineWidth', 1.5)
     xlabel('t [s]')
     ylabel(['d\it\theta_' num2str(i)])
     grid on
 
-    subplot(3, 3, plot_idx + 6)
-    plot(t, ddQ(i,:), 'r', 'LineWidth', 1.5)
+    % 3. Wykres Przyspieszenia (dd\theta)
+    subplot(3, 3, plot_index + 6)
+    plot(t_tot, ddq_tot, 'r', 'LineWidth', 1.5)
     xlabel('t [s]')
     ylabel(['dd\it\theta_' num2str(i)])
     grid on
-end
 
-figure(fig_offset)
-sgtitle([tytul_glowny ' - Ramie (1-3)'])
-figure(fig_offset + 1)
-sgtitle([tytul_glowny ' - Nadgarstek (4-6)'])
-end
+end 
+
+% === USTAWIENIA TYTUŁÓW I NAZW OKIEN ===
+figure(1)
+set(gcf, 'Name', 'Trajektoria 4-3-4 - Ramie', 'NumberTitle', 'off');
+sgtitle('Trajektorie ramienia (1-3) - Trajektoria 4-3-4');
+
+figure(2)
+set(gcf, 'Name', 'Trajektoria 4-3-4 - Nadgarstek', 'NumberTitle', 'off');
+sgtitle('Trajektorie nadgarstka (4-6) - Trajektoria 4-3-4');
+
+ftf = 1;
+end 
