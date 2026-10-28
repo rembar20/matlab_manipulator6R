@@ -14,7 +14,7 @@ while(1)
         wielomian_5stopien(t0,tk,ThetasP_A(:,1)',ThetasP_B(:,1)')
     elseif(user_input == 3)
         disp(user_input)
-        wielomian_7stopien
+        wielomian_7stopien(t0,tk,ThetasP_A(:,1)',ThetasP_B(:,1)')
     elseif(user_input == 4)
         disp(user_input)
         cztery_trzy_cztery
