@@ -22,17 +22,17 @@ function A_ZYX = matrixA_ZYX(fi, vi, ksi, x, y, z)
 end
 
 
-function [fi1,vi1,ksi1,fi2,vi2,ksi2] = orientation_angles(A)
-    %The first solution
-    % ZYX
-    vi1 = atan2(-A(3,1), sqrt(A(1,1)^2 + A(2,1)^2));
-    fi1 = atan2(A(2,1), A(1,1));
-    ksi1 = atan2(A(3,2), A(3,3));
-    % ZYX 2nd solution for assumed combination of theta
-    % Rozwiązanie 2 (osobliwość / druga gałąź):
-    vi2 = atan2(-A(3,1), -sqrt(A(1,1)^2 + A(2,1)^2));
-    fi2 = atan2(-A(2,1), -A(1,1));
-    ksi2 = atan2(-A(3,2), -A(3,3));
+function [fi1,vi1,ksi1,fi2,vi2,ksi2]=orientation_angles(A)
+
+%The first solution
+fi1=atan2(A(2,3),A(1,3)); %around Z axis
+vi1=atan2(sqrt(A(1,3)*A(1,3)+A(2,3)*A(2,3)),A(3,3)); %around Y' axis
+ksi1=atan2(A(3,2),-A(3,1)); %around z" axis
+
+%The second solution for assumed combination of theta ( 4 possible)
+fi2=atan2(-A(2,3),-A(1,3)); %around Z axis
+vi2=atan2(-sqrt(A(1,3)*A(1,3)+A(2,3)*A(2,3)), A(3,3)) ; %around Y' axis
+ksi2=atan2(-A(3,2),-A(3,1)); %around Z" axis
 end
 
 InverseResult = zeros(6,8); % Stworzenie macierzy wynikowej
@@ -43,10 +43,10 @@ InverseResult = zeros(6,8); % Stworzenie macierzy wynikowej
 
 
 A60=matrixA_ZYX(tool_fi, tool_vi, tool_ksi, x, y, z); % Wyznacz macierz A60 obracajac wokół RPY
-
+Z_Directional = [A60(1,3), A60(2,3), A60(3,3)];
 %Wyliczanie pozycji środka nadgarstka (CoW - Center of Wirst)
-TCP_position=[x y z 1];
-CoW_position=TCP_position - dh_parameters.lambda6*[A60(1,3) A60(2,3) A60(3,3) A60(4,3)] ;% vector of position of the wirst center
+TCP_position=[x y z];
+CoW_position=TCP_position - dh_parameters.lambda6*Z_Directional ;% vector of position of the wirst center
 X_CoW=CoW_position(1); Y_CoW=CoW_position(2); Z_CoW=CoW_position(3);
 
 %Obliczenia dla Theta 1

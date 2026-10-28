@@ -60,11 +60,14 @@ else
      pause(1);
      end
     
+    %WARTOSCI PODSTAWOWE
+    %---------------------------------------------------------------
     p_A_x = 100; p_A_y = 100; p_A_z = 100;
     p_B_x = 200; p_B_y = 200; p_B_z = 200;
     deg_A_alpha = 0 ; deg_A_beta  = 0  ;deg_A_gamma = 0;
     deg_B_alpha = 15 ; deg_B_beta  = 45  ;deg_B_gamma = 60;
     tk = 1;
+    %----------------------------------------------------------------   
 end
 
 p_A= [
@@ -114,7 +117,7 @@ if(~strcmp(manual_input, "Y"))
     end
      fprintf('\n') % nowa linia
     disp("Czas ruchu tk = " + num2str(tk));
-    pause(1); %pauza na 3 sekundy, zeby mozna bylo zobaczyc ze cos sie stalo w konsoli
+    %pause(1); %pauza na 3 sekundy, zeby mozna bylo zobaczyc ze cos sie stalo w konsoli
 end
 
 %wyznaczenie macierzy orientacji w po³o¿eniu A i B
