@@ -16,7 +16,7 @@ for i = 1:n
     % Vector B: [q0, dq0, ddq0, qk, dqk, ddqk]'
     B = [q_A(i); 0; 0; q_B(i); 0; 0];
 
-    X = A \ B; % Zalecane zamiast inv(A)*B
+    X = inv(A)*B;
 
     a0 = X(1);
     a1 = X(2);

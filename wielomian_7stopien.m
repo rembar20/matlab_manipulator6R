@@ -15,10 +15,8 @@ A = [1 0 0 0 0 0 0 0;
      0 0 0 6/tk^3 24/tk^3 60/tk^3 120/tk^3 210/tk^3];
 
 for i = 1:n
-    % Wektor B (8x1): pozycja, predkosc, przyspieszenie, zryw w t0 i tk
+
     B = [q_A(i); 0; 0; 0; q_B(i); 0; 0; 0];
-    
-    % Rozwiązanie układu równań (A \ B jest szybsze i bardziej stabilne niż inv(A)*B)
     X = inv(A)*B;
     
     a0 = X(1); 
