@@ -11,7 +11,7 @@ while(1)
         wielomian_3stopien(t0,tk,ThetasP_A(:,1)',ThetasP_B(:,1)')
     elseif(user_input == 2)
         disp(user_input)
-        wielomian_5stopien
+        wielomian_5stopien(t0,tk,ThetasP_A(:,1)',ThetasP_B(:,1)')
     elseif(user_input == 3)
         disp(user_input)
         wielomian_7stopien
