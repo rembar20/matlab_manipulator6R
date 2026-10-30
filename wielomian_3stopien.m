@@ -1,10 +1,10 @@
-function w_3stp = wielomian_3stopien(t0,tk,q_A,q_B)
+
 t=t0:0.01:tk;
 tau=t./tk;
 %theta1 theta2 theta3
 k=size(q_A);
 n=k(2);
-
+q_tau_w3 = zeros(length(t),n);
 %macierz
 A=[1 0 0 0;
     0 1/tk 0 0;
@@ -25,6 +25,8 @@ q_tau=a0+a1*tau+a2*tau.^2+a3*tau.^3;
 dq_tau = (a1+2*a2*tau+3*a3*tau.^2)/tk;
 ddq_tau = (2*a2+6*a3*tau)/tk^2;
 
+q_tau_w3(:,i) = q_tau(:); %inicjalizacja tablicy w której zawarte są wszystkie przejściowe wartości kątów przegubów  
+
 %Rysowanie wykresow
 if(i <=3)
     figure(1)
@@ -41,11 +43,14 @@ nazwa=['\it\theta_' num2str(i)];
 title(nazwa)
 ylabel(nazwa)
 grid on
+
 subplot(3,3,plot_index+3)
 plot(tau,dq_tau,'r')
 xlabel('\it\tau')
 nazwa=['d\it\theta_' num2str(i)];
 ylabel(nazwa)
+grid on
+
 subplot(3,3,plot_index+6)
 plot(tau,ddq_tau,'r')
 xlabel('\it\tau')
@@ -61,4 +66,3 @@ figure(2)
 set(gcf,"Name", "W3Stp - Nadgarstek","NumberTitle", "off")
 sgtitle('Trajektorie nadgarstka (4-6) - Wielomian 3 stopnia')
 w_3stp = 0;
-end
