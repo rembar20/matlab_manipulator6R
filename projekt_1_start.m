@@ -1,8 +1,11 @@
-%to do:
-% zrobic punkty - wybor macierzy, spr_macierzy, planowanie_trajektorii ale
-% to po zajeciach/wykladzie
-
-% uzyc pliku z zajec zeby zrobic planowanie trajektorii
+% %TODO LIST:
+% 
+% - Zniwelowanie ilości funkcji - DONE (jako tako)
+% 
+% - Poprawa wielomianu 7 stopnia, 
+% - całkowicie od zera zrobić wielomian 434,
+% - Trajektorię XYZ (każde osobno)
+% - Tor (wykres przestrzenny)
 
 clear
 close all
