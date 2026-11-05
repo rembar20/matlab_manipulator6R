@@ -3,7 +3,7 @@ ListaNazwDanych = {['Wspolrzedne punktu ' oznaczenie_punktu ' [mm]'], ['Orientac
 dimension = [1 50]; % Wielkosc okna 
 defaultValues = {'Dane nalezy oddzielac przecinkiem! x,y,z','alpha,beta,gamma'}; %wartosci podstawowe w polu dialogowym
 poprawneDane = false; % Flaga bitowa uzywana w funkcji while
-title = "Parametry punktu" + oznaczenie_punktu; % Tytul okna
+title = "Parametry punktu " + oznaczenie_punktu; % Tytul okna
 aux_Posit = []; %inicjalizacje zmiennych
 aux_Orient = [];
 
