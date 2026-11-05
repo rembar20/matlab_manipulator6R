@@ -1,7 +1,7 @@
 function [aux_Posit, aux_Orient] = DanePunktuGlownego(oznaczenie_punktu) %Funkcja otwiera okno w ktorym mozna wpisac dane punktu
 ListaNazwDanych = {['Wspolrzedne punktu ' oznaczenie_punktu ' [mm]'], ['Orientacja punktu ' oznaczenie_punktu ' [deg]']}; %Tablica zawierajace dane wyswietlane nad polem dialogowmy
 dimension = [1 50]; % Wielkosc okna 
-defaultValues = {'Dane nalezy oddzielac przecinkiem!',''}; %wartosci podstawowe w polu dialogowym
+defaultValues = {'Dane nalezy oddzielac przecinkiem! x,y,z','alpha,beta,gamma'}; %wartosci podstawowe w polu dialogowym
 poprawneDane = false; % Flaga bitowa uzywana w funkcji while
 title = "Parametry punktu" + oznaczenie_punktu; % Tytul okna
 aux_Posit = []; %inicjalizacje zmiennych
@@ -13,7 +13,7 @@ while ~poprawneDane %Petla, ktora powoduje ze funkcja niez akonczy sie dopoki ni
     if(~isempty(InputValues)) % Sprawdz czy COKOLWIEK zostalo wpisane w tablice (jest pusta tylko gdy kliknie sie cancel)
         
         aux_Posit = str2num(InputValues{1}); %Zamien string na wartosc numeryczna
-        aux_Orient = deg2rad(str2num(InputValues{2})); % Zamien string na wartosc w stopniach
+        aux_Orient = str2num(InputValues{2}); % Zamien string na wartosc w stopniach
 
         if(isempty(aux_Posit)   || isempty(aux_Orient) || numel(aux_Posit) ~= 3 || numel(aux_Orient) ~= 3) %Sprawdz nastepujace warunki
             %Isempty() czy wpisano cokolwiek w dana zmienną

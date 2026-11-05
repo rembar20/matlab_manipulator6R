@@ -4,7 +4,7 @@
 function [aux_Posit, aux_Orient, aux_time] = DanePunktuPomocniczego(oznaczenie_punktu, t0, tk) %Funkcja otwiera okno w ktorym mozna wpisac dane punktu
 ListaNazwDanych = {['Wspolrzedne punktu przejsciowego ' oznaczenie_punktu ' [mm]'], ['Orientacja punktu przejsciowego ' oznaczenie_punktu ' [deg]'], ['t' oznaczenie_punktu ' [s] Musi znajdowac sie w zakresie od ' num2str(t0) ' do ' num2str(tk)]}; %Tablica zawierajace dane wyswietlane nad polem dialogowmy
 dimension = [1 50]; % Wielkosc okna 
-defaultValues = {'','',''}; %wartosci podstawowe w polu dialogowym
+defaultValues = {'Dane nalezy oddzielac przecinkiem! x,y,z','alpha,beta,gamma',''}; %wartosci podstawowe w polu dialogowym
 poprawneDane = false; % Flaga bitowa uzywana w funkcji while
 title = "Parametry punktu przejsciowego numer " + oznaczenie_punktu; % Tytul okna
 aux_Posit = [];

@@ -1,12 +1,3 @@
-function val = input_liczba(prompt_text)
-    % Sprawdza czy wpisane dane s¹ liczb¹
-    val = str2double(input(prompt_text, 's'));
-    
-    while isnan(val)
-        disp('  [!] B³¹d: Wprowadzona wartoœæ nie jest liczb¹. Spróbuj ponownie.');
-        val = str2double(input(prompt_text, 's'));
-    end
-end
 
 function matrixZYX = matrixZYX(alpha, beta, gamma) 
 matrixZYX = [
@@ -21,45 +12,33 @@ end
 t0= 0;
 %po³o¿enie 
 %wpisac z klawiatury odpowiednie wartosci
-manual_input = input("Czy chcesz wpisac wlasne dane planowania? [Y/N]: ", 's');
-manual_input = upper(manual_input);
-if strcmp(manual_input, "Y")
-    % Sekcja wpisywania danych
-    disp("Dane Punktu A")
-    p_A_x = input_liczba("Podaj wspolrzedna X punktu poczatkowego p_A_x = ");
-    p_A_y = input_liczba("Podaj wspolrzedna Y punktu poczatkowego p_A_y = ");
-    p_A_z = input_liczba("Podaj wspolrzedna Z punktu poczatkowego p_A_z = ");
-    fprintf('\n') % nowa linia
-    
-    disp("Dane Punktu B")
-    p_B_x = input_liczba("Podaj wspolrzedna X punktu koncowego p_B_x = ");
-    p_B_y = input_liczba("Podaj wspolrzedna Y punktu koncowego p_B_y = ");
-    p_B_z = input_liczba("Podaj wspolrzedna Z punktu koncowego p_B_z = ");   
-    fprintf('\n') % nowa linia
-    
-    disp("Orientacja pocz¹tkowa (A)")
-    deg_A_alpha = input_liczba("Podaj k¹t alpha orientacji pocz¹tkowej (A) deg_A_alpha = ");
-    deg_A_beta  = input_liczba("Podaj k¹t beta orientacji pocz¹tkowej (A) deg_A_beta = ");
-    deg_A_gamma = input_liczba("Podaj k¹t gamma orientacji pocz¹tkowej (A) deg_A_gamma = ");
-    fprintf('\n') % nowa linia
-    
-    disp("Orientacja koñcowa (B)")
-    deg_B_alpha = input_liczba("Podaj k¹t alpha orientacji koñcowej (B) deg_B_alpha = ");
-    deg_B_beta  = input_liczba("Podaj k¹t beta orientacji koñcowej (B) deg_B_beta = ");
-    deg_B_gamma = input_liczba("Podaj k¹t gamma orientacji koñcowej (B) deg_B_gamma = ");
-    fprintf('\n') % nowa linia
 
-    disp("Czas ruchu")
-    tk = input_liczba("Podaj czas ruchu tk = ");
+    odp = questdlg('Czy chcesz uzyc podstawowych wartosci punktów A i B oraz tk?', ... %otworz okno dialogowe z zapytaniem o wartosci podstawowe
+        'Zapytanie', ...
+        "Tak","Nie",2);
+    if(odp == "Nie") %jezeli wybrano manualne wpisywanie wartosci
+        [pozycja, orientacja] = DanePunktuGlownego('A');
+        p_A_x = pozycja(1);
+        p_A_y = pozycja(2);
+        p_A_z = pozycja(3);
+        deg_A_alpha = orientacja(1);
+        deg_A_beta = orientacja(2);
+        deg_A_gamma = orientacja(3);
 
-    %Sekcja podstawiania podstawowych danych
-else
-     if(~strcmp(manual_input,"N"))
-     disp("[!] Odpowiedz rozna od Y lub N, przyjmuje podstawowe dane [!]")
-     manual_input = "N";
-     pause(1);
-     end
-    
+        [pozycja, orientacja] = DanePunktuGlownego('B');
+        p_B_x = pozycja(1);
+        p_B_y = pozycja(2);
+        p_B_z = pozycja(3);
+        deg_B_alpha = orientacja(1);
+        deg_B_beta = orientacja(2);
+        deg_B_gamma = orientacja(3);
+        
+        tk = tk_input; % 
+    else %jezeli wybrano wartosci podstawowe/zamknieto okno
+        if(odp ~= "Tak") %jezeli zamknieto okno
+        msgbox("Zamknieto okno, uzywanie wartosci podstawowych")
+        end
+    %ustaw wartosci podstawowe:
     %WARTOSCI PODSTAWOWE
     %---------------------------------------------------------------
     p_A_x = 100; p_A_y = 200; p_A_z = 300;
@@ -68,8 +47,7 @@ else
     deg_B_alpha = 15 ; deg_B_beta  = 45  ;deg_B_gamma = 60;
     tk = 1;
     %----------------------------------------------------------------   
-end
-
+    end
 p_A= [
     p_A_x; %x
     p_A_y; %y
@@ -101,19 +79,19 @@ string_array = ["alpha","beta","gamma";
 disp("Przyjete podstawowe dane:")
 if(~strcmp(manual_input, "Y"))
     for i = 1:3
-        disp("Wspolrzedna " + string_array(2,i) + " punktu poczatkowego p_A_" + lower(string_array(2,i)) + " = " + num2str(p_A(i)));
+        disp("Wspolrzedna " + string_array(2,i) + " punktu poczatkowego p_A_" + lower(string_array(2,i)) + " = " + num2str(p_A(i)) + " [mm]");
     end
      fprintf('\n') % nowa linia
     for i = 1:3
-        disp("Wspolrzedna " + string_array(2,i) + " punktu koncowego p_B_" + lower(string_array(2,i)) + " = " + num2str(p_B(i)));
+        disp("Wspolrzedna " + string_array(2,i) + " punktu koncowego p_B_" + lower(string_array(2,i)) + " = " + num2str(p_B(i)) + " [mm]");
     end
      fprintf('\n') % nowa linia
     for i = 1:3
-        disp("Kat " + string_array(1,i) + " orientacji poczatkowej p_A_" + lower(string_array(1,i)) + " = " + num2str(A_DegArray(i)));
+        disp("Kat " + string_array(1,i) + " orientacji poczatkowej p_A_" + lower(string_array(1,i)) + " = " + num2str(A_DegArray(i)) + " [deg]");
     end
      fprintf('\n') % nowa linia
     for i = 1:3
-        disp("Kat " + string_array(1,i) + " orientacji koncowej p_B_" + lower(string_array(1,i)) + " = " + num2str(B_DegArray(i)));
+        disp("Kat " + string_array(1,i) + " orientacji koncowej p_B_" + lower(string_array(1,i)) + " = " + num2str(B_DegArray(i)) + " [deg]");
     end
      fprintf('\n') % nowa linia
     disp("Czas ruchu tk = " + num2str(tk));
