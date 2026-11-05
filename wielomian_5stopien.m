@@ -29,46 +29,11 @@ for i = 1:n
 
     % Pozycja, prędkość i przyspieszenie
     q_tau   = a0 + a1*tau + a2*tau.^2 + a3*tau.^3 + a4*tau.^4 + a5*tau.^5;
-    dq_tau  = (a1 + 2*a2*tau + 3*a3*tau.^2 + 4*a4*tau.^3 + 5*a5*tau.^4);
-    ddq_tau = (2*a2 + 6*a3*tau + 12*a4*tau.^2 + 20*a5*tau.^3);
+    dq_tau  = (a1 + 2*a2*tau + 3*a3*tau.^2 + 4*a4*tau.^3 + 5*a5*tau.^4)/tk;
+    ddq_tau = (2*a2 + 6*a3*tau + 12*a4*tau.^2 + 20*a5*tau.^3)/tk^2;
     
     q_tau_w5(:,i) = q_tau(:);
 
-    if(i <= 3)
-        figure(3)
-        plot_index = i;
-    elseif i >= 4 
-        figure(4)
-        plot_index = i-3;
-    end
-
-    subplot(3,3,plot_index)
-    plot(tau,q_tau,'r')
-    xlabel('\it\tau')
-    nazwa = ['\it\theta_' num2str(i)];
-    title(nazwa)
-    ylabel(nazwa)
-    grid on
-
-    subplot(3,3,plot_index+3)
-    plot(tau,dq_tau,'r')
-    xlabel('\it\tau')
-    nazwa = ['d\it\theta_' num2str(i)];
-    ylabel(nazwa)
-    grid on
-
-    subplot(3,3,plot_index+6)
-    plot(tau,ddq_tau,'r')
-    xlabel('\it\tau')
-    nazwa = ['dd\it\theta_' num2str(i)];
-    ylabel(nazwa)
-    grid on
+%Rysowanie wykresow
+rys_wykresy(tau,q_tau,dq_tau,ddq_tau,i,3,5) %  WektorCzasu, WektorQ, Wektor_dQ, Wektor_ddQ, i, num_okna, st_wielomianu
 end
-
-figure(3)
-set(gcf,"Name", "W5Stp - Ramie","NumberTitle", "off")
-sgtitle('Trajektorie ramienia (1-3) - Wielomian 5 stopnia')
-figure(4)
-set(gcf,"Name", "W5Stp - Nadgarstek","NumberTitle", "off")
-sgtitle('Trajektorie nadgarstka (4-6) - Wielomian 5 stopnia')
-w_5stp  = 0;

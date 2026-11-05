@@ -23,7 +23,7 @@ def_tk = 1;
 %--- WPISYWANIE WLASNYCH DANYCH ---
     if(odp == "Nie") %jezeli wybrano manualne wpisywanie wartosci
         [pozycja, orientacja] = DanePunktuGlownego('A'); %wywolaj funkcje dla punktu A
-        if(~isempty(pozycja) && ~isempty(orientajca)) %jezeli dane nie sa puste (nie zamknieto okna) to przypisz odebrane dane odpowiednim wartosciom
+        if(~isempty(pozycja) && ~isempty(orientacja)) %jezeli dane nie sa puste (nie zamknieto okna) to przypisz odebrane dane odpowiednim wartosciom
         p_A_x = pozycja(1);
         p_A_y = pozycja(2);
         p_A_z = pozycja(3);
@@ -38,7 +38,7 @@ def_tk = 1;
         end
 
         [pozycja, orientacja] = DanePunktuGlownego('B'); %jak wyzej, jak nie puste to przypisz w innym rpzypadku podstawowe wartosci
-        if(~isempty(pozycja) && ~isempty(orientajca))
+        if(~isempty(pozycja) && ~isempty(orientacja))
         p_B_x = pozycja(1);
         p_B_y = pozycja(2);
         p_B_z = pozycja(3);

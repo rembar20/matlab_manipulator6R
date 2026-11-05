@@ -28,41 +28,5 @@ ddq_tau = (2*a2+6*a3*tau)/tk^2;
 q_tau_w3(:,i) = q_tau(:); %inicjalizacja tablicy w której zawarte są wszystkie przejściowe wartości kątów przegubów  
 
 %Rysowanie wykresow
-if(i <=3)
-    figure(1)
-    plot_index = i;
-elseif i>=4 
-    figure(2)
-    plot_index = i-3;
+rys_wykresy(tau,q_tau,dq_tau,ddq_tau,i,1,3) %  WektorCzasu, WektorQ, Wektor_dQ, Wektor_ddQ, i, num_okna, st_wielomianu
 end
-
-subplot(3,3,plot_index)
-plot(tau,q_tau,'r')
-xlabel('\it\tau')
-nazwa=['\it\theta_' num2str(i)];
-title(nazwa)
-ylabel(nazwa)
-grid on
-
-subplot(3,3,plot_index+3)
-plot(tau,dq_tau,'r')
-xlabel('\it\tau')
-nazwa=['d\it\theta_' num2str(i)];
-ylabel(nazwa)
-grid on
-
-subplot(3,3,plot_index+6)
-plot(tau,ddq_tau,'r')
-xlabel('\it\tau')
-nazwa=['dd\it\theta_' num2str(i)];
-ylabel(nazwa)
-grid on
-%eval(['C' num2str(i) '=C'])
-end
-figure(1)
-set(gcf,"Name", "W3Stp - Ramie","NumberTitle", "off")
-sgtitle('Trajektorie ramienia (1-3) - Wielomian 3 stopnia')
-figure(2)
-set(gcf,"Name", "W3Stp - Nadgarstek","NumberTitle", "off")
-sgtitle('Trajektorie nadgarstka (4-6) - Wielomian 3 stopnia')
-w_3stp = 0;

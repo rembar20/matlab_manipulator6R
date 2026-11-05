@@ -1,142 +1,123 @@
-function ftf = cztery_trzy_cztery(t0, tk, q_A, q_D,wybrana_konfiguracja, dh_params)
-%RAMIE IDZIE Z PUNKTU A (Punkt A definiowany w danych planowania) do punktu
-%D (punktu koncowego) przez 2 punkty pomocnicze (B i C)
 
-%Definiowanie punktu B
-[pozycja_pomocnicza_B, orientacja_pomocnicza_B, czas_przejsciowy_B] = DanePunktuPomocniczego(1);
-AuxPoint_B = zadanie_odwrotne(pozycja_pomocnicza_B(1),pozycja_pomocnicza_B(2),pozycja_pomocnicza_B(3),orientacja_pomocnicza_B(1),orientacja_pomocnicza_B(2),orientacja_pomocnicza_B(3),dh_params);
-aux_qB = AuxPoint_B(:,wybrana_konfiguracja);
 
-%Definiowanie punktu C
+t1 = (1/3)*tk; % ustaw tr jako 1/3 czasu koncowego
+t2 = (2/3)*tk; % ustaw tw jako 2/3 czasu koncowego
+%t3 = tk
+tr = t1-t0;
+tb = t2-t1;
+tw = tk-t2;
+k = size(q_A);
+n = k(2);
+tvec_1 = t0:0.01:tr;
+tau_t1 = (tvec_1-t0)/(t1-t0);
+tvec_2 = t1:0.01:t2;
+tau_t2 = (tvec_2-t1)/(t2-t1);
+tvec_3 = t2:0.01:tk;
+tau_t3 = (tvec_3-t2)/(tk-t2);
 
-[pozycja_pomocnicza_C, orientacja_pomocnicza_C, czas_przejsciowy_C] = DanePunktuPomocniczego(2);
-AuxPoint_C = zadanie_odwrotne(pozycja_pomocnicza_C(1),pozycja_pomocnicza_C(2),pozycja_pomocnicza_C(3),orientacja_pomocnicza_C(1),orientacja_pomocnicza_C(2),orientacja_pomocnicza_C(3),dh_params);
-aux_qC = AuxPoint_C(:,wybrana_konfiguracja);
-
-%Definicja czasow przejsciowych
-
-T_AdoB = czas_przejsciowy_B - t0;
-T_BdoC = czas_przejsciowy_C - czas_przejsciowy_B;
-T_CdoD = tk - czas_przejsciowy_C;
-
-% Ilosc przegubow
-n = length(q_A);
-
-% Wektory czasu (znormalizowane [0,1])
-dt = 0.01;
-tau = 0:dt:1;
-
-% Macierz A (14x14)
-A = [
-    1, 0, 0, 0, 0,                      0, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 1.  q1(0) = qA
-    0, 1/T_AdoB, 0, 0, 0,               0, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 2.  dq1(0) = 0
-    0, 0, 2/T_AdoB^2, 0, 0,             0, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 3.  ddq1(0) = 0
-    1, 1, 1, 1, 1,                      0, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 4.  q1(1) = qB
-    0, 0, 0, 0, 0,                      1, 0, 0, 0,                      0, 0, 0, 0, 0;                                     % 5.  q2(0) = qB
-    0, 0, 0, 0, 0,                      1, 1, 1, 1,                      0, 0, 0, 0, 0;                                     % 6.  q2(1) = qC
-    0, 0, 0, 0, 0,                      0, 0, 0, 0,                      1, 0, 0, 0, 0;                                     % 7.  q3(0) = qC
-    0, 0, 0, 0, 0,                      0, 0, 0, 0,                      1, 1, 1, 1, 1;                                     % 8.  q3(1) = qD
-    0, 0, 0, 0, 0,                      0, 0, 0, 0,                      0, 1/T_CdoD, 2/T_CdoD, 3/T_CdoD, 4/T_CdoD;         % 9.  dq3(1) = 0
-    0, 0, 0, 0, 0,                      0, 0, 0, 0,                      0, 0, 2/T_CdoD^2, 6/T_CdoD^2, 12/T_CdoD^2;         % 10. ddq3(1) = 0
-    0, 1/T_AdoB, 2/T_AdoB, 3/T_AdoB, 4/T_AdoB,      0, -1/T_BdoC, 0, 0,                  0, 0, 0, 0, 0;                     % 11. dq1(1) - dq2(0) = 0
-    0, 0, 2/T_AdoB^2, 6/T_AdoB^2, 12/T_AdoB^2,      0, 0, -2/T_BdoC^2, 0,                0, 0, 0, 0, 0;                     % 12. ddq1(1) - ddq2(0) = 0
-    0, 0, 0, 0, 0,                      0, 1/T_BdoC, 2/T_BdoC, 3/T_BdoC,             0, -1/T_CdoD, 0, 0, 0;                 % 13. dq2(1) - dq3(0) = 0
-    0, 0, 0, 0, 0,                      0, 0, 2/T_BdoC^2, 6/T_BdoC^2,            0, 0, -2/T_CdoD^2, 0, 0;                   % 14. ddq2(1) - ddq3(0) = 0
-];
+q_R = (1/4)*(q_B+3*q_A);
+q_W = (1/4)*(3*q_B+q_A);
+%Macierz 14x14 
+A = [1, 0,    0,       0,      0,       0, 0,     0,      0,      0, 0,     0,      0,      0;  %w1
+     0, 0,    0,       0,      0,       0, 0,     0,      0,      0, 1,     1,      1,      1;  %w2
+     0 1/tr   0,       0,      0,       0, 0,     0,      0,      0, 0,     0,      0,      0;  %w3
+     0, 0     0,       0,      0,       0, 0,     0,      0,      0, 1/tw,  2/tw,   3/tw,   4/tw; %w4
+     0, 0,    2/tr^2,  0,      0,       0, 0,     0,      0,      0, 0,     0,      0,      0;  %w5
+     0, 0,    0,       0,      0,       0, 0,     0,      0,      0, 0,     2/tw^2, 6/tw^2, 12/tw^2; %w6
+     1, 1,    1,       1,      1,       0, 0,     0,      0,      0, 0,     0,      0,      0;  %w7
+     0, 0,    0,       0,      0,       1, 1,     1,      1,      0, 0,     0,      0,      0;  %w8
+     0, 1/tr, 2/tr,    3/tr,   4/tr,    0, -1/tb, 0,      0,      0, 0,     0,      0,      0;  %w9
+     0, 0,    0,       0,      0,       0, 1/tb,  2/tb,   3/tb,   0, -1/tw, 0,      0,      0;  %w10
+     0, 0,    2/tr^2,  6/tr^2, 12/tr^2, 0,  0,   -2/tb^2, 0,      0, 0,     0,      0,      0;  %w11
+     0, 0,    0,       0,      0,       0,  0,    2/tb^2, 6/tb^2, 0, 0,    -2/tw^2, 0,      0;  %w12
+     0, 0,    0,       0,      0,       1,  0,    0,       0,     0, 0,     0,      0,      0;  %w13
+     0, 0,    0,       0,      0,       0,  0,    0,       0,     1, 0,     0,      0,      0]; %w14
 
 for i = 1:n
-    
-    B = [
-        q_A(i);      % 1.  pozycja startowa qA
-        0;           % 2.  prędkość startowa = 0
-        0;           % 3.  przyspieszenie startowe = 0
-        aux_qB(i);   % 4.  pozycja w punkcie B (koniec 1. segmentu)
-        aux_qB(i);   % 5.  pozycja w punkcie B (start 2. segmentu)
-        aux_qC(i);   % 6.  pozycja w punkcie C (koniec 2. segmentu)
-        aux_qC(i);   % 7.  pozycja w punkcie C (start 3. segmentu)
-        q_D(i);      % 8.  pozycja końcowa qD
-        0;           % 9.  prędkość końcowa = 0
-        0;           % 10. przyspieszenie końcowe = 0
-        0;           % 11. różnica prędkości w punkcie B = 0 (ciągłość)
-        0;           % 12. różnica przyspieszeń w punkcie B = 0 (ciągłość)
-        0;           % 13. różnica prędkości w punkcie C = 0 (ciągłość)
-        0            % 14. różnica przyspieszeń w punkcie C = 0 (ciągłość)
-    ];
-    X = inv(A)*B;
+B = [q_A(i); q_B(i); 0; 0; 0; 0; q_R(i); q_W(i); 0; 0; 0; 0; q_R(i); q_W(i)];
+X = inv(A)*B;
 
-    %wspolczynniki wielomianow
-    aAdoB = X(1:5);
-    aBdoC = X(6:9);
-    aCdoD = X(10:14);
+a10 = X(1);
+a11 = X(2);
+a12 = X(3);
+a13 = X(4);
+a14 = X(5);
+a20 = X(6);
+a21 = X(7);
+a22 = X(8);
+a23 = X(9);
+a30 = X(10);
+a31 = X(11);
+a32 = X(12);
+a33 = X(13);
+a34 = X(14);
 
+%pozycja
+q_w4_1 = a10+a11*tau_t1+a12*tau_t1.^2+a13*tau_t1.^3+a14*tau_t1.^4;
+q_w3   = a20+a21*tau_t2+a22*tau_t2.^2+a23*tau_t2.^3;
+q_w4_2 = a30+a31*tau_t3+a32*tau_t3.^2+a33*tau_t3.^3+a34*tau_t3.^4;
+%predkosc
+dq_w4_1 = (a11+2*a12*tau_t1+3*a13*tau_t1.^2+4*a14*tau_t1.^3)/tr;
+dq_w3  = (a21+2*a22*tau_t2+3*a23*tau_t2.^2)/tb;
+dq_w4_2 = (a31+2*a32*tau_t3+3*a33*tau_t3.^2+4*a34*tau_t3.^3)/tw;
+%przyspieszenie
+ddq_w4_1 = (2*a12+6*a13*tau_t1+12*a14*tau_t1.^2)/tr^2;
+ddq_w3 = (2*a22+6*a23*tau_t2)/tb^2;
+ddq_w4_2 = (2*a32+6*a33*tau_t3+12*a34*tau_t3.^2)/tw^2;
 
-      
-    % --- (A -> B) ---
-    q1   = aAdoB(1) + aAdoB(2)*tau + aAdoB(3)*tau.^2 + aAdoB(4)*tau.^3 + aAdoB(5)*tau.^4;
-    dq1  = aAdoB(2) + 2*aAdoB(3)*tau + 3*aAdoB(4)*tau.^2 + 4*aAdoB(5)*tau.^3;
-    ddq1 = 2*aAdoB(3) + 6*aAdoB(4)*tau + 12*aAdoB(5)*tau.^2;
-    
-    % --- (B -> C) ---
-    q2   = aBdoC(1) + aBdoC(2)*tau + aBdoC(3)*tau.^2 + aBdoC(4)*tau.^3;
-    dq2  = aBdoC(2) + 2*aBdoC(3)*tau + 3*aBdoC(4)*tau.^2;
-    ddq2 = 2*aBdoC(3) + 6*aBdoC(4)*tau;
-    
-    % --- (C -> D) ---
-    q3   = aCdoD(1) + aCdoD(2)*tau + aCdoD(3)*tau.^2 + aCdoD(4)*tau.^3 + aCdoD(5)*tau.^4;
-    dq3  = aCdoD(2) + 2*aCdoD(3)*tau + 3*aCdoD(4)*tau.^2 + 4*aCdoD(5)*tau.^3;
-    ddq3 = 2*aCdoD(3) + 6*aCdoD(4)*tau + 12*aCdoD(5)*tau.^2;
-    
-    % Składanie fragmentów wykresu do jednej zmiennej
-    t_tot   = [t0 + tau*T_AdoB, t0 + T_AdoB + tau*T_BdoC, t0+ T_AdoB + T_BdoC + tau*T_CdoD];
-    q_tot   = [q1, q2, q3];
-    dq_tot  = [dq1, dq2, dq3];
-    ddq_tot = [ddq1, ddq2, ddq3];
-    
-% === RYSOWANIE WYKRESÓW DLA I-TEGO PRZEGUBU ===
+%sklejenie wielomianu
+
+index_R = size(tau_t1,2); %indeksy uzywane do wziecia danych z tablicy calkowitej by zaznaczyc punkty zmiany wielomianow
+index_W = size(tau_t1,2)+size(tau_t2,2); % jako ze wielomiany sa sklejane to punktem przegeicia bedzie ostatni punkt w tablicy
+
+tau_calk = [tvec_1,tvec_2,tvec_3]; %zakres 
+q_calk = [q_w4_1, q_w3, q_w4_2];
+dq_calk = [dq_w4_1, dq_w3, dq_w4_2];
+ddq_calk = [ddq_w4_1, ddq_w3, ddq_w4_2];
+
+rys_wykresy(tau_calk,q_calk,dq_calk,ddq_calk,i,7,434)
+ %Rysowanie wykresow
     if i <= 3
-        figure(1);
+        figure(7)
         plot_index = i;
     else
-        figure(2);
+        figure(8)
         plot_index = i - 3;
     end
 
-    % 1. Wykres Położenia (\theta)
-    subplot(3, 3, plot_index)
-    plot(t_tot, q_tot, 'r', 'LineWidth', 1.5)
-    hold on;
-    plot(t0 + T_AdoB, aux_qB(i), 'bo', 'MarkerFaceColor', 'b');          % Punkt B
-    plot(t0 + T_AdoB + T_BdoC, aux_qC(i), 'go', 'MarkerFaceColor', 'g'); % Punkt C
-    hold off;
-    xlabel('t [s]')
-    ylabel(['\it\theta_' num2str(i)])
-    title(['\it\theta_' num2str(i)])
-    grid on
+    % Punkty R i W na wykresach przemieszczenia
 
-    % 2. Wykres Prędkości (d\theta)
-    subplot(3, 3, plot_index + 3)
-    plot(t_tot, dq_tot, 'r', 'LineWidth', 1.5)
-    xlabel('t [s]')
-    ylabel(['d\it\theta_' num2str(i)])
-    grid on
+    subplot(3,3,plot_index)
+    hold on
+    plot(tau_calk(index_R), q_calk(index_R), 'go', MarkerSize=6, MarkerFaceColor='g'); % stworz punkt 'go' g -green o - punkt, MarkerSize - wielkosc punktu , MarkerFaceColor = 'g' - kolor wypelnienia na  g (green)
+    plot(tau_calk(index_W), q_calk(index_W), 'bo', MarkerSize=6, MarkerFaceColor='b'); % b- blue i tak dalej
+    % Dodanie opisów tekstowych nad/obok punktów
+    text(tau_calk(index_R), q_calk(index_R), '  R', 'VerticalAlignment', 'bottom', 'FontSize', 9, 'Color', 'g', 'FontWeight', 'bold');
+    text(tau_calk(index_W), q_calk(index_W), '  W', 'VerticalAlignment', 'bottom', 'FontSize', 9, 'Color', 'b', 'FontWeight', 'bold');
+    % Maksymalne i minimalne wartosci
+    hold off
 
-    % 3. Wykres Przyspieszenia (dd\theta)
-    subplot(3, 3, plot_index + 6)
-    plot(t_tot, ddq_tot, 'r', 'LineWidth', 1.5)
-    xlabel('t [s]')
-    ylabel(['dd\it\theta_' num2str(i)])
-    grid on
+    % Punkty R i W na wykresach predkosci
 
-end 
+    subplot(3,3,plot_index+3)
+    hold on
+    plot(tau_calk(index_R), dq_calk(index_R), 'go', MarkerSize=6, MarkerFaceColor='g'); % stworz punkt 'go' g -green o - punkt, MarkerSize - wielkosc punktu , MarkerFaceColor = 'g' - kolor wypelnienia na  g (green)
+    plot(tau_calk(index_W), dq_calk(index_W), 'bo', MarkerSize=6, MarkerFaceColor='b'); % b- blue i tak dalej
+    hold off
+    % Dodanie opisów tekstowych nad/obok punktów
+    text(tau_calk(index_R), dq_calk(index_R), '  R', 'VerticalAlignment', 'bottom', 'FontSize', 9, 'Color', 'g', 'FontWeight', 'bold');
+    text(tau_calk(index_W), dq_calk(index_W), '  W', 'VerticalAlignment', 'bottom', 'FontSize', 9, 'Color', 'b', 'FontWeight', 'bold');
+    hold off
+       
+    % Punkty R i W na wykresach przyspieszenia
 
-% === USTAWIENIA TYTUŁÓW I NAZW OKIEN ===
-figure(1)
-set(gcf, 'Name', 'Trajektoria 4-3-4 - Ramie', 'NumberTitle', 'off');
-sgtitle('Trajektorie ramienia (1-3) - Trajektoria 4-3-4');
+    subplot(3,3,plot_index+6)
+    hold on
+    plot(tau_calk(index_R), ddq_calk(index_R), 'go', MarkerSize=6, MarkerFaceColor='g'); % stworz punkt 'go' g -green o - punkt, MarkerSize - wielkosc punktu , MarkerFaceColor = 'g' - kolor wypelnienia na  g (green)
+    plot(tau_calk(index_W), ddq_calk(index_W), 'bo', MarkerSize=6, MarkerFaceColor='b'); % b- blue i tak dalej
+    % Dodanie opisów tekstowych nad/obok punktów
+    text(tau_calk(index_R), ddq_calk(index_R), '  R', 'VerticalAlignment', 'bottom', 'FontSize', 9, 'Color', 'g', 'FontWeight', 'bold');
+    text(tau_calk(index_W), ddq_calk(index_W), '  W', 'VerticalAlignment', 'bottom', 'FontSize', 9, 'Color', 'b', 'FontWeight', 'bold');
+    hold off
 
-figure(2)
-set(gcf, 'Name', 'Trajektoria 4-3-4 - Nadgarstek', 'NumberTitle', 'off');
-sgtitle('Trajektorie nadgarstka (4-6) - Trajektoria 4-3-4');
-
-ftf = 1;
-end 
+end

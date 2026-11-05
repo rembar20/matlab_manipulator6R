@@ -7,12 +7,13 @@
 %       notka na przyszłość: spróbować zoptymalizować funkcje w ten sposób by
 %       nie musiała startować od zera przy każdym usunięciu liczby zespolonej
 % - Zmiana inputu na okna dialogowe (done)
-% - Dodac anulacje wykonania skryptu przy anulowaniu wpisywania inputu
-% (done)
+% - Dodac anulacje wykonania skryptu przy anulowaniu wpisywania inputu (done)
 % - Poprawa wielomianu 7 stopnia, 
+%       Wykresy wygladaja ok, trzeba dodac punkty przegiecia
 % - całkowicie od zera zrobić wielomian 434,
 % - Trajektorię XYZ (każde osobno)
 % - Tor (wykres przestrzenny)
+% - min i max na wykresach
 
 clear
 close all

@@ -1,5 +1,5 @@
 
-[pos_R, orient_R, tr] = DanePunktuInput('R',t0,tk);
+[pos_R, orient_R, tr] = DanePunktuPomocniczego('R',t0,tk);
 
 if( isempty(pos_R)|| isempty(orient_R) || isempty(tr)) %sprawdzenie czy anulowano wpisanie danych punktu R
     msgbox("Anulowano rysowanie wykresów", 'Operacja anulowana', 'warn');
@@ -50,11 +50,22 @@ for i = 1:n
     
     % Pozycja, prędkość i przyspieszenie
     q_tau = a0 + a1*tau + a2*tau.^2 + a3*tau.^3 + a4*tau.^4 + a5*tau.^5 + a6*tau.^6 + a7*tau.^7;
-    dq_tau = (a1 + 2*a2*tau + 3*a3*tau.^2 + 4*a4*tau.^3 + 5*a5*tau.^4 + 6*a6*tau.^5 + 7*a7*tau.^6);
-    ddq_tau = (2*a2 + 6*a3*tau + 12*a4*tau.^2 + 20*a5*tau.^3 + 30*a6*tau.^4 + 42*a7*tau.^5);
 
-   q_tau_w7(:,i) = q_tau(:);
+    wzor_dq =  @(tau) (a1 + 2*a2*tau + 3*a3*tau.^2 + 4*a4*tau.^3 + 5*a5*tau.^4 + 6*a6*tau.^5 + 7*a7*tau.^6)/tk; %stworz wzor funkcji na dq
+    wzor_ddq = @(tau) (2*a2 + 6*a3*tau + 12*a4*tau.^2 + 20*a5*tau.^3 + 30*a6*tau.^4 + 42*a7*tau.^5)/tk^2; %stworz wzor funkcji na ddq
+    %@(argument) (funkcja(argument))- szkielet definicji funkcji w matlabie
+    dq_tau = wzor_dq(tau); %uzyj wzoru funkcji wzor_dq i jako argument uzyj tablicy tau
+    ddq_tau = wzor_ddq(tau); % uzyj wzoru funkmcji wozr_ddq i jako argument uzyj tablicy tau
+    dq_r = wzor_dq(tr/tk); % podobnie jak wyzej tylko tym razem uzywa sie jako argument pojedynczej liczby (znormalizowane tr)
+    dq_w = wzor_dq(tw/tk);
+    ddq_r = wzor_ddq(tr/tk);
+    ddq_w = wzor_ddq(tw/tk);
+    %te zmienne są po to, zeby na wykresach moc zaznaczyc PUNKTY tr, tw i
+    %jakie wartosci sa dla tr i tw
+    q_tau_w7(:,i) = q_tau(:);
     %Rysowanie wykresow
+
+    rys_wykresy(tau,q_tau,dq_tau,ddq_tau,i,5,7) %  WektorCzasu, WektorQ, Wektor_dQ, Wektor_ddQ, i, num_okna, st_wielomianu
     if i <= 3
         figure(5)
         plot_index = i;
@@ -62,28 +73,42 @@ for i = 1:n
         figure(6)
         plot_index = i - 3;
     end
-    
+        
+    % Punkty R i W na wykresach przemieszczenia
+
     subplot(3,3,plot_index)
-    plot(tau, q_tau, 'r')
-    xlabel('\it\tau')
-    nazwa = ['\it\theta_' num2str(i)];
-    title(nazwa)
-    ylabel(nazwa)
-    grid on
-    
+    hold on
+    plot(tr/tk, q_R(i), 'go', MarkerSize=6, MarkerFaceColor='g'); % stworz punkt 'go' g -green o - punkt, MarkerSize - wielkosc punktu , MarkerFaceColor = 'g' - kolor wypelnienia na  g (green)
+    plot(tw/tk, q_W(i), 'bo', MarkerSize=6, MarkerFaceColor='b'); % b- blue i tak dalej
+    % Dodanie opisów tekstowych nad/obok punktów
+    text(tr/tk, q_R(i), '  R', 'VerticalAlignment', 'bottom', 'FontSize', 9, 'Color', 'g', 'FontWeight', 'bold');
+    text(tw/tk, q_W(i), '  W', 'VerticalAlignment', 'bottom', 'FontSize', 9, 'Color', 'b', 'FontWeight', 'bold');
+    hold off
+        
+    % Punkty R i W na wykresach predkosci
+
     subplot(3,3,plot_index+3)
-    plot(tau, dq_tau, 'r')
-    xlabel('\it\tau')
-    nazwa = ['d\it\theta_' num2str(i)];
-    ylabel(nazwa)
-    grid on
-    
+    hold on
+    plot(tr/tk, dq_r, 'go', MarkerSize=6, MarkerFaceColor='g');
+    plot(tw/tk, dq_w, 'bo', MarkerSize=6, MarkerFaceColor='b');
+    % Dodanie opisów tekstowych nad/obok punktów
+    text(tr/tk, dq_r, '  R', 'VerticalAlignment', 'bottom', 'FontSize', 9, 'Color', 'g', 'FontWeight', 'bold');
+    text(tw/tk, dq_w, '  W', 'VerticalAlignment', 'bottom', 'FontSize', 9, 'Color', 'b', 'FontWeight', 'bold');
+    hold off
+        
+    % Punkty R i W na wykresach przyspieszenia
+
+  
     subplot(3,3,plot_index+6)
-    plot(tau, ddq_tau, 'r')
-    xlabel('\it\tau')
-    nazwa = ['dd\it\theta_' num2str(i)];
-    ylabel(nazwa)
-    grid on
+    hold on
+    plot(tr/tk, ddq_r, 'go', MarkerSize=6, MarkerFaceColor='g');
+    plot(tw/tk, ddq_w, 'bo', MarkerSize=6, MarkerFaceColor='b');
+    % Dodanie opisów tekstowych nad/obok punktów
+    text(tr/tk, ddq_r, '  R', 'VerticalAlignment', 'bottom', 'FontSize', 9, 'Color', 'g', 'FontWeight', 'bold');
+    text(tw/tk, ddq_w, '  W', 'VerticalAlignment', 'bottom', 'FontSize', 9, 'Color', 'b', 'FontWeight', 'bold');
+    hold off
+
+
 end
 
 
