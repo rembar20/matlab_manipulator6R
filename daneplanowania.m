@@ -10,42 +10,66 @@ end
 %z klawiatury
 %czas
 t0= 0;
+defA = [100,200,300,0,0,0]; %x,y,z, alpha,beta,gamma
+defB = [200,250,230,15,45,60]; %uzywane by zadeklarowac stale na gorze programu i nie musiec ich zmieniac w akzdym jego punkcie
+def_tk = 1;
 %po³o¿enie 
 %wpisac z klawiatury odpowiednie wartosci
-
+% ------------------ WPISYWANIE DANYCH Z KLAWIATURY ------------------------
     odp = questdlg('Czy chcesz uzyc podstawowych wartosci punktów A i B oraz tk?', ... %otworz okno dialogowe z zapytaniem o wartosci podstawowe
         'Zapytanie', ...
-        "Tak","Nie",2);
+        "Tak","Nie", ... %2 odpowiedzi
+        'Tak'); % Podstawowa wartosc (zaznaczona przy otwarciu okna
+%--- WPISYWANIE WLASNYCH DANYCH ---
     if(odp == "Nie") %jezeli wybrano manualne wpisywanie wartosci
-        [pozycja, orientacja] = DanePunktuGlownego('A');
+        [pozycja, orientacja] = DanePunktuGlownego('A'); %wywolaj funkcje dla punktu A
+        if(~isempty(pozycja) && ~isempty(orientajca)) %jezeli dane nie sa puste (nie zamknieto okna) to przypisz odebrane dane odpowiednim wartosciom
         p_A_x = pozycja(1);
         p_A_y = pozycja(2);
         p_A_z = pozycja(3);
         deg_A_alpha = orientacja(1);
         deg_A_beta = orientacja(2);
         deg_A_gamma = orientacja(3);
+        else
+        msgbox("Anulowano wprowadzanie wartosci, przyjmuje wartosci podstawowe punktu A") %jezeli zamknieto okno/wcisnieto przycisk anuluj to uzyj podstawowych wartosci
 
-        [pozycja, orientacja] = DanePunktuGlownego('B');
+            p_A_x = defA(1); p_A_y = defA(2); p_A_z = defA(3);
+            deg_A_alpha = defA(4) ; deg_A_beta  = defA(5)  ;deg_A_gamma = defA(6);
+        end
+
+        [pozycja, orientacja] = DanePunktuGlownego('B'); %jak wyzej, jak nie puste to przypisz w innym rpzypadku podstawowe wartosci
+        if(~isempty(pozycja) && ~isempty(orientajca))
         p_B_x = pozycja(1);
         p_B_y = pozycja(2);
         p_B_z = pozycja(3);
         deg_B_alpha = orientacja(1);
         deg_B_beta = orientacja(2);
         deg_B_gamma = orientacja(3);
+        else
+        msgbox("Anulowano wprowadzanie wartosci, przyjmuje wartosci podstawowe punktu B")
+
+            p_B_x = defB(1); p_B_y = defB(2); p_B_z = defB(3);
+            deg_B_alpha = defB(4) ; deg_B_beta  = defB(5)  ;deg_B_gamma = defB(6);
+        end
         
-        tk = tk_input; % 
+        tk = tk_input; %jako ze tk_input zwraca tylko jedna liczbe najpierw przypisz do finalnej zmiennej
+        if(isnan(tk)) %potem sprawdz czy ta zmienna nie jest pusta
+            tk = def_tk; %jak jest pusta to przypisz default wartosc
+        end 
+    % --- UZYWANIE WARTOSCI PODSTAWOWYCH ---
+
     else %jezeli wybrano wartosci podstawowe/zamknieto okno
         if(odp ~= "Tak") %jezeli zamknieto okno
         msgbox("Zamknieto okno, uzywanie wartosci podstawowych")
         end
     %ustaw wartosci podstawowe:
-    %WARTOSCI PODSTAWOWE
+    %WARTOSCI PODSTAWOWE DEKLARACJA NA GORZE PLIKU
     %---------------------------------------------------------------
-    p_A_x = 100; p_A_y = 200; p_A_z = 300;
-    p_B_x = 200; p_B_y = 200; p_B_z = 200;
-    deg_A_alpha = 0 ; deg_A_beta  = 0  ;deg_A_gamma = 0;
-    deg_B_alpha = 15 ; deg_B_beta  = 45  ;deg_B_gamma = 60;
-    tk = 1;
+    p_A_x = defA(1); p_A_y = defA(2); p_A_z = defA(3);
+    p_B_x = defB(1); p_B_y = defB(2); p_B_z = defB(3);
+    deg_A_alpha = defA(4) ; deg_A_beta  = defA(5)  ;deg_A_gamma = defA(6);
+    deg_B_alpha = defB(4) ; deg_B_beta  = defB(5)  ;deg_B_gamma = defB(6);
+    tk = def_tk;
     %----------------------------------------------------------------   
     end
 p_A= [
@@ -73,11 +97,10 @@ orientation_matrix_A = matrixZYX(A_DegArray(1),A_DegArray(2),A_DegArray(3));
 orientation_matrix_B = matrixZYX(B_DegArray(1),B_DegArray(2),B_DegArray(3));
 
 
-% Wypisanie wartosci jezeli ustawiono wartosci domyslne
+% Wypisanie wartosci 
 string_array = ["alpha","beta","gamma";
                "X","Y","Z"];
-disp("Przyjete podstawowe dane:")
-if(~strcmp(manual_input, "Y"))
+disp("Przyjete dane:")
     for i = 1:3
         disp("Wspolrzedna " + string_array(2,i) + " punktu poczatkowego p_A_" + lower(string_array(2,i)) + " = " + num2str(p_A(i)) + " [mm]");
     end
@@ -96,11 +119,16 @@ if(~strcmp(manual_input, "Y"))
      fprintf('\n') % nowa linia
     disp("Czas ruchu tk = " + num2str(tk));
     %pause(1); %pauza na 3 sekundy, zeby mozna bylo zobaczyc ze cos sie stalo w konsoli
-end
 
 %wyznaczenie macierzy orientacji w po³o¿eniu A i B
 disp("Macierz orientacji A:")
 disp(num2str(orientation_matrix_A))
 disp("Macierz orientacji B:")
 disp(num2str(orientation_matrix_B))
-
+%czyszczenie zmiennych pomocniczych z tej funkcji (kazda jest albo zawarta
+%w innej zmiennej lub nie jest juz potrzebna
+%zmienne sa czyszczone w dwoch celach:
+% ograniczenia zuzycia pamieci RAM oraz zwiekszenia czytelnosci workspace  
+% i jako zmienna do petli for zostaje, zeby nie zuzywac zasobow (i czasu) na ponowna
+% inicjalizacje zmiennej
+clear p_A_x p_A_y p_A_z p_B_x p_B_y p_B_z deg_A_alpha deg_B_alpha deg_A_beta deg_B_beta deg_A_gamma deg_B_gamma pozycja orientacja odp string_array defA defB def_tk

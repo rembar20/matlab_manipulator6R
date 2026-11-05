@@ -1,8 +1,14 @@
 % %TODO LIST:
 % 
 % - Zniwelowanie ilości funkcji - DONE (jako tako)
-%    Wybor konfiguracji: notka na przyszłość: spróbować zoptymalizować funkcje w ten sposób by
-     %nie musiała startować od zera przy każdym usunięciu liczby zespolonej
+% - Wybor konfiguracji:
+%       Sprawdzenie czy rzeczywiste (done)
+%       Najoptymalniejsza droga od bazy do punktu
+%       notka na przyszłość: spróbować zoptymalizować funkcje w ten sposób by
+%       nie musiała startować od zera przy każdym usunięciu liczby zespolonej
+% - Zmiana inputu na okna dialogowe (done)
+% - Dodac anulacje wykonania skryptu przy anulowaniu wpisywania inputu
+% (done)
 % - Poprawa wielomianu 7 stopnia, 
 % - całkowicie od zera zrobić wielomian 434,
 % - Trajektorię XYZ (każde osobno)
