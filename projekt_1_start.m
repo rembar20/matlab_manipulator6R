@@ -1,7 +1,8 @@
 % %TODO LIST:
 % 
 % - Zniwelowanie ilości funkcji - DONE (jako tako)
-% 
+%    Wybor konfiguracji: notka na przyszłość: spróbować zoptymalizować funkcje w ten sposób by
+     %nie musiała startować od zera przy każdym usunięciu liczby zespolonej
 % - Poprawa wielomianu 7 stopnia, 
 % - całkowicie od zera zrobić wielomian 434,
 % - Trajektorię XYZ (każde osobno)
@@ -29,7 +30,6 @@ danemanipulatora
 %wszystkie wartosci kątów są w RADIANACH!!!!
 ThetasP_A = zadanie_odwrotne(p_A(1),p_A(2),p_A(3),alpha_A,beta_A,gamma_A,dh_params);
 ThetasP_B = zadanie_odwrotne(p_B(1),p_B(2),p_B(3),alpha_B,beta_B,gamma_B,dh_params);
-
 wybor_konfiguracji
 spr_macierzy
 planowanie_trajektorii

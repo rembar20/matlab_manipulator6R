@@ -5,5 +5,3 @@
 % wyznaczenie min(theta1_B-theta1_A)
 %wyznaczenie min(theta2_B-theta2_A)
 %itd.
-
-

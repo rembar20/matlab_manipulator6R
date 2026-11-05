@@ -1,5 +1,5 @@
 
-[pos_R, orient_R, tr] = DanePunktuPomocniczego('R',t0,tk);
+[pos_R, orient_R, tr] = DanePunktuInput('R',t0,tk);
 
 if( isempty(pos_R)|| isempty(orient_R) || isempty(tr)) %sprawdzenie czy anulowano wpisanie danych punktu R
     msgbox("Anulowano rysowanie wykresów", 'Operacja anulowana', 'warn');
