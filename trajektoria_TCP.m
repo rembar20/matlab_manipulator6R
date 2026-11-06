@@ -30,7 +30,6 @@ grid on; axis equal;
 xlabel('X [mm]'); ylabel('Y [mm]');
 title('Trajektoria TCP x-y');
 
-
 subplot(1,3,2) %wykres 2d x-z
 plot(punkty_TCP(:,1), punkty_TCP(:,3), 'r-', 'LineWidth', 2)
 grid on; axis equal;
