@@ -75,6 +75,7 @@ q_calk = [q_w4_1, q_w3, q_w4_2];
 dq_calk = [dq_w4_1, dq_w3, dq_w4_2];
 ddq_calk = [ddq_w4_1, ddq_w3, ddq_w4_2];
 
+q_tau_w434 = q_calk(:,i);
 rys_wykresy(tau_calk,q_calk,dq_calk,ddq_calk,i,7,434)
  %Rysowanie wykresow
     if i <= 3

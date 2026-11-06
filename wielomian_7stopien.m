@@ -87,7 +87,7 @@ for i = 1:n
         
     % Punkty R i W na wykresach predkosci
 
-    subplot(3,3,plot_index+3)
+    subplot(3,3,plot_index+3)qw
     hold on
     plot(tr/tk, dq_r, 'go', MarkerSize=6, MarkerFaceColor='g');
     plot(tw/tk, dq_w, 'bo', MarkerSize=6, MarkerFaceColor='b');

@@ -7,11 +7,12 @@
 % - Zmiana inputu na okna dialogowe (done)
 % - Dodac anulacje wykonania skryptu przy anulowaniu wpisywania inputu (done)
 % - Poprawa wielomianu 7 stopnia ( done)
-%       Wykresy wygladaja ok, trzeba dodac punkty przegiecia (done
+%       Wykresy wygladaja ok, trzeba dodac punkty przegiecia (done)
 % - całkowicie od zera zrobić wielomian 434 (done)
 % - Trajektorię XYZ (każde osobno)
 % - Tor (wykres przestrzenny)
-% - min i max na wykresach
+% - min i max na wykresach (done)
+% - Po narysowaniu wykresow
 
 clear
 close all
@@ -35,6 +36,6 @@ danemanipulatora
 %wszystkie wartosci kątów są w RADIANACH!!!!
 ThetasP_A = zadanie_odwrotne(p_A(1),p_A(2),p_A(3),alpha_A,beta_A,gamma_A,dh_params);
 ThetasP_B = zadanie_odwrotne(p_B(1),p_B(2),p_B(3),alpha_B,beta_B,gamma_B,dh_params);
-wybor_konfiguracji
+[optymP_A, optymP_B, NazwyKonfiguracji_pA, NazwyKonfiguracji_pB] = wybor_konfiguracji(ThetasP_A,ThetasP_B);
 spr_macierzy
 planowanie_trajektorii

@@ -83,8 +83,8 @@ theta2_4=2*atan(t2);
 
 %Wyznaczenie Setów kątów
 
-Sets = [theta1_1, theta2_1,theta3_1;
-        theta1_1, theta2_3,theta3_2;
+Sets = [theta1_1, theta2_1,theta3_1; 
+        theta1_1, theta2_3,theta3_2; 
         theta1_2, theta2_2,theta3_1;
         theta1_2, theta2_4,theta3_2];
 
