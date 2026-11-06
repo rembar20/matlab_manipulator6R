@@ -17,7 +17,7 @@ while(allReal == 0) % mało wydajne rozwiązanie na sprawdzanie czy wszystko jes
     wynik = InvResult;
     else  %jak macierz wejsciowa  została zredukowana do macierzy 0x0
     msgbox("Zadne z rozwiązań zadania odwrotnego nie jest rzeczywiste!"); %wyswietl okienko, ze zadne z rozwiazan nie jest rzeczywiste
-    wynik = NaN; %wynik jako nan (uzywane do podania uzytkownikowi informacji o tym, ze musi ponownie wprowadzic dane wejsciowe)
+    wynik = []; %wynik jako nan (uzywane do podania uzytkownikowi informacji o tym, ze musi ponownie wprowadzic dane wejsciowe)
     break;
     end
 end %end while

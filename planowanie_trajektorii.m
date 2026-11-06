@@ -3,7 +3,7 @@
 %menu mo¿na utworzyæ korzystaj¹c z zadanie 9 (zestaw II)
 %menu aktywne
 %mo¿na wykorzystaæ, np. while, break, return
-konfiguracja = 1;
+konfiguracja = 1; % ROBOCZO!!!
 q_A =  ThetasP_A(:,konfiguracja)'; %przepisanie wybranego rozwiazania zadania odwrotnego kinematyki do zmiennej pomocniczej 
 q_B = ThetasP_B(:,konfiguracja)';
 

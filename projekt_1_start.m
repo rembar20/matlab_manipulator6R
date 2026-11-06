@@ -3,14 +3,12 @@
 % - Zniwelowanie ilości funkcji - DONE (jako tako)
 % - Wybor konfiguracji:
 %       Sprawdzenie czy rzeczywiste (done)
-%       Najoptymalniejsza droga od bazy do punktu
-%       notka na przyszłość: spróbować zoptymalizować funkcje w ten sposób by
-%       nie musiała startować od zera przy każdym usunięciu liczby zespolonej
+%       Najoptymalniejsza droga od bazy do punktu (done)
 % - Zmiana inputu na okna dialogowe (done)
 % - Dodac anulacje wykonania skryptu przy anulowaniu wpisywania inputu (done)
-% - Poprawa wielomianu 7 stopnia, 
-%       Wykresy wygladaja ok, trzeba dodac punkty przegiecia
-% - całkowicie od zera zrobić wielomian 434,
+% - Poprawa wielomianu 7 stopnia ( done)
+%       Wykresy wygladaja ok, trzeba dodac punkty przegiecia (done
+% - całkowicie od zera zrobić wielomian 434 (done)
 % - Trajektorię XYZ (każde osobno)
 % - Tor (wykres przestrzenny)
 % - min i max na wykresach

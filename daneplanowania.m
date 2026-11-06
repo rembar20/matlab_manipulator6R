@@ -55,6 +55,7 @@ def_tk = 1;
         tk = tk_input; %jako ze tk_input zwraca tylko jedna liczbe najpierw przypisz do finalnej zmiennej
         if(isnan(tk)) %potem sprawdz czy ta zmienna nie jest pusta
             tk = def_tk; %jak jest pusta to przypisz default wartosc
+            msgbox("Anulowano wprowadzanie wartosci, przyjmuje wartosci podstawowe czasu tk")
         end 
     % --- UZYWANIE WARTOSCI PODSTAWOWYCH ---
 
