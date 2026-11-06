@@ -3,9 +3,10 @@
 %menu mo¿na utworzyæ korzystaj¹c z zadanie 9 (zestaw II)
 %menu aktywne
 %mo¿na wykorzystaæ, np. while, break, return
-konfiguracja = 1;
-q_A =  ThetasP_A(:,konfiguracja)'; %przepisanie wybranego rozwiazania zadania odwrotnego kinematyki do zmiennej pomocniczej 
-q_B = ThetasP_B(:,konfiguracja)';
+konfiguracja_A = optymP_A;
+konfiguracja_B = optymP_B
+q_A =  ThetasP_A(:,konfiguracja_A)'; %przepisanie wybranego rozwiazania zadania odwrotnego kinematyki do zmiennej pomocniczej 
+q_B = ThetasP_B(:,konfiguracja_B)';
 
 while(1)
     user_input =  menu('Wybierz Opcje:', 'Wielomian 3 stopnia', 'Wielomian 5 stopnia', 'Wielomian 7 stopnia', '4 3 4', 'Wyjscie');

@@ -1,7 +1,7 @@
 % %TODO LIST:
 % 
 % - Zniwelowanie ilości funkcji - DONE (jako tako)
-% - Wybor konfiguracji:
+% - Wybor konfiguracji: (done)
 %       Sprawdzenie czy rzeczywiste (done)
 %       Najoptymalniejsza droga od bazy do punktu (done)
 % - Zmiana inputu na okna dialogowe (done)
@@ -9,8 +9,8 @@
 % - Poprawa wielomianu 7 stopnia ( done)
 %       Wykresy wygladaja ok, trzeba dodac punkty przegiecia (done)
 % - całkowicie od zera zrobić wielomian 434 (done)
-% - Trajektorię XYZ (każde osobno)
-% - Tor (wykres przestrzenny)
+% - Trajektorię XYZ (każde osobno) (done)
+% - Tor (wykres przestrzenny) (
 % - min i max na wykresach (done)
 % - Po narysowaniu wykresow
 
@@ -36,6 +36,6 @@ danemanipulatora
 %wszystkie wartosci kątów są w RADIANACH!!!!
 ThetasP_A = zadanie_odwrotne(p_A(1),p_A(2),p_A(3),alpha_A,beta_A,gamma_A,dh_params);
 ThetasP_B = zadanie_odwrotne(p_B(1),p_B(2),p_B(3),alpha_B,beta_B,gamma_B,dh_params);
-[optymP_A, optymP_B, NazwyKonfiguracji_pA, NazwyKonfiguracji_pB] = wybor_konfiguracji(ThetasP_A,ThetasP_B);
-spr_macierzy
+[optymP_A, optymP_B, NazwyKonfiguracji_pA, NazwyKonfiguracji_pB] = wybor_konfiguracji(ThetasP_A,ThetasP_B); % Wybor optymalnej konfiguracji (najmniejsze przemieszczenie)
+%spr_macierzy % Dane o orientacji sa zawarte w rozwiazaniu zadania odwrotnego, poniewaz jest to robot o ruchliwosci = 6, stad sprawdzanie macierzy nie jest potrzebne. 
 planowanie_trajektorii
