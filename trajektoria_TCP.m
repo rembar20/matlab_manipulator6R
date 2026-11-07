@@ -1,5 +1,5 @@
 
-switch typ_wielomianu
+switch typ_wielomianu % pomocnicze ustawianie zmiennych uzywanych do tytulow okien/wykresow
         case 3
             tytul_okna = "W3";
             tytul_wykresu = "Wielomian 3 stopnia";
@@ -14,17 +14,22 @@ switch typ_wielomianu
             tytul_wykresu = "Wielomiany 4-3-4";
 end
 
+% zmienne zmiany konfiguracji
 PrzyciskiMenuKonfiguracji = {NazwyKonfiguracji_pA,NazwyKonfiguracji_pB,NazwyKonfiguracji_pR,NazwyKonfiguracji_pW};
 TytulyMenuKonfiguracji = ["A";"B";"R";"W"];
 konfiguracja_out = [konfiguracja_A,konfiguracja_B,konfiguracja_R,konfiguracja_W];
+
+%zmienne punktow
 ilosc_punktow = size(q_tau_tcp, 1);
 punkty_TCP = zeros(ilosc_punktow, 3);
 
+%jezeli ma rysowac punkty R i W to wykonaj zadanie proste 
 if(rysuj_RW)
     [~, p_R, ~] = zadanie_proste(q_R_tcp, dh_params);
     [~, p_W, ~] = zadanie_proste(q_W_tcp, dh_params);
 end
 
+% stworz  tablice pozycji XYZ TCP
 for i = 1:ilosc_punktow
     
     tablica_pozycji = q_tau_tcp(i, :);
@@ -33,7 +38,7 @@ for i = 1:ilosc_punktow
     
 end
 
-
+%otworz menu z wyborem
 while(1)
     user_input_trajektorie = menu("Wybierz trajektorie TCP do wyswietlenia","Trajektoria TCP - XYZ (3D)", "Trajektoria TCP - Rzuty X-Y, X-Z, Y-Z", "Trajektoria TCP - X(t), Y(t), Z(t) ", "Wybor konfiguracji", "Powrot do wyboru wielomianu");
 
