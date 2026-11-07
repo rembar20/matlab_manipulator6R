@@ -81,13 +81,36 @@ t2=(-2*k1-2*sqrt(k1*k1+k2*k2-k3*k3))/(2*(k2-k3));
 theta2_3=2*atan(t1);
 theta2_4=2*atan(t2);
 
+%Prawa strona: 
+k1R=-OXY-dh_parameters.l1;
+c_alpha_theta3R=(k1R*k1R+k2*k2-dh_parameters.l2*dh_parameters.l2-r3*r3)/(2*dh_parameters.l2*r3);
+s1_alpha_theta3R=sqrt(1-c_alpha_theta3R*c_alpha_theta3R);
+s2_alpha_theta3R=-sqrt(1-c_alpha_theta3R*c_alpha_theta3R);
+theta3_3=alpha-atan2(s1_alpha_theta3R,c_alpha_theta3R);
+theta3_4=alpha-atan2(s2_alpha_theta3R,c_alpha_theta3R);
+
+%Theta 2 dla theta3_3 
+k3=r3*sin(alpha-theta3_3);
+t1=(-2*k1R+2*sqrt(k1R*k1R+k2*k2-k3*k3))/(2*(k2-k3));
+t2=(-2*k1R-2*sqrt(k1R*k1R+k2*k2-k3*k3))/(2*(k2-k3));
+theta2_5=2*atan(t1);
+theta2_6=2*atan(t2);
+
+%Theta 2 dla theta3_4
+k3=r3*sin(alpha-theta3_4);
+t1=(-2*k1R+2*sqrt(k1R*k1R+k2*k2-k3*k3))/(2*(k2-k3));
+t2=(-2*k1R-2*sqrt(k1R*k1R+k2*k2-k3*k3))/(2*(k2-k3));
+theta2_7=2*atan(t1);
+theta2_8=2*atan(t2);
+
+
+
 %Wyznaczenie Setów kątów
 
-Sets = [theta1_1, theta2_1,theta3_1; 
-        theta1_1, theta2_3,theta3_2; 
-        theta1_2, theta2_2,theta3_1;
-        theta1_2, theta2_4,theta3_2];
-
+Sets = [theta1_1, theta2_1, theta3_1;
+        theta1_1, theta2_3, theta3_2;
+        theta1_2, theta2_5, theta3_3;
+        theta1_2, theta2_7, theta3_4];
 for i = 1:4
 column_even = 2*i; % 4 = 8
 column_odd = 2*i-1; % 4 = 7, 3 = 5 etc
@@ -131,8 +154,8 @@ InverseResult(6,4)= ksi2;
 
 %set3 (RIGHT UP): theta1_2, theta2_2, theta3_1
 A1=matrixA(theta1_2, dh_parameters.lambda1, dh_parameters.l1, dh_parameters.alpha1);
-A2=matrixA(theta2_2,dh_parameters.lambda2, dh_parameters.l2, dh_parameters.alpha2);
-A3=matrixA(theta3_1,dh_parameters.lambda3, dh_parameters.l3, dh_parameters.alpha3);
+A2=matrixA(theta2_5,dh_parameters.lambda2, dh_parameters.l2, dh_parameters.alpha2);
+A3=matrixA(theta3_3,dh_parameters.lambda3, dh_parameters.l3, dh_parameters.alpha3);
 A3e=matrixA(dh_parameters.theta3e,dh_parameters.lambda3e, dh_parameters.l3e, dh_parameters.alpha3e);
 A30_3=A1*A2*A3*A3e;
 A63_3=inv(A30_3)*A60;
@@ -149,8 +172,8 @@ InverseResult(6,6)= ksi2;
 
 %set4 (RIGHT DOWN): theta1_2, theta2_4, theta3_2
 A1=matrixA(theta1_2, dh_parameters.lambda1, dh_parameters.l1, dh_parameters.alpha1);
-A2=matrixA(theta2_4,dh_parameters.lambda2, dh_parameters.l2, dh_parameters.alpha2);
-A3=matrixA(theta3_2,dh_parameters.lambda3, dh_parameters.l3, dh_parameters.alpha3);
+A2=matrixA(theta2_7,dh_parameters.lambda2, dh_parameters.l2, dh_parameters.alpha2);
+A3=matrixA(theta3_4,dh_parameters.lambda3, dh_parameters.l3, dh_parameters.alpha3);
 A3e=matrixA(dh_parameters.theta3e,dh_parameters.lambda3e, dh_parameters.l3e, dh_parameters.alpha3e);
 A30_4=A1*A2*A3*A3e;
 A63_4=inv(A30_4)*A60;

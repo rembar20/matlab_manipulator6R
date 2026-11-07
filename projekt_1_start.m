@@ -10,9 +10,12 @@
 %       Wykresy wygladaja ok, trzeba dodac punkty przegiecia (done)
 % - całkowicie od zera zrobić wielomian 434 (done)
 % - Trajektorię XYZ (każde osobno) (done)
-% - Tor (wykres przestrzenny) (
+% - Tor (wykres przestrzenny) (done)
 % - min i max na wykresach (done)
-% - Po narysowaniu wykresow
+% - Punkty R i W na wykresach TCP
+% - Przestrzen robocza
+% - Sprawdzanie czy punkty mieszcza sie w przestrzeni roboczej
+% - Menu wyboru konfiguracji
 
 clear
 close all
@@ -36,6 +39,10 @@ danemanipulatora
 %wszystkie wartosci kątów są w RADIANACH!!!!
 ThetasP_A = zadanie_odwrotne(p_A(1),p_A(2),p_A(3),alpha_A,beta_A,gamma_A,dh_params);
 ThetasP_B = zadanie_odwrotne(p_B(1),p_B(2),p_B(3),alpha_B,beta_B,gamma_B,dh_params);
-[optymP_A, optymP_B, NazwyKonfiguracji_pA, NazwyKonfiguracji_pB] = wybor_konfiguracji(ThetasP_A,ThetasP_B); % Wybor optymalnej konfiguracji (najmniejsze przemieszczenie)
+[optymP_A, optymP_B, NazwyKonfiguracji_pA, NazwyKonfiguracji_pB, RealThetasP_A, RealThetasP_B] = wybor_konfiguracji(ThetasP_A,ThetasP_B); % Wybor optymalnej konfiguracji (najmniejsze przemieszczenie)
+% W funkcji wybor konfiguracji dodatkowo sprawdza sie czy wszystkie
+% rozwiazania sa rzeczywiste, jezeli ktores nie jest to usun je i zmniejsz
+% ilosc dostepnych  rozwiazan
+disp("Wybrane rozwiązanie zadania odwrotnego (najmniejsze przemieszczenie) dla punktu A: Set"  + num2str(optymP_A) + " B: Set" + num2str(optymP_B) )
 %spr_macierzy % Dane o orientacji sa zawarte w rozwiazaniu zadania odwrotnego, poniewaz jest to robot o ruchliwosci = 6, stad sprawdzanie macierzy nie jest potrzebne. 
 planowanie_trajektorii

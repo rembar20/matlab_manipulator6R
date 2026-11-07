@@ -1,12 +1,4 @@
 function [A60, position, orientation_ZYX] = zadanie_proste(Thetas, dh_parameters)
-% ZADANIE_PROSTE Oblicza pozycję i orientację TCP na podstawie kątów przegubowych
-% Wersja ze spójną korektą parametrów DH i odczytem orientacji ZYX
-
-    
-    % 1. KOREKTA DH: lambda4 musi wynosić 0, ponieważ przesunięcie 410 mm
-    % jest już realizowane przez macierz A3e (lambda3e)
-    dh_parameters.lambda4 = 0; %
-
     t1 = Thetas(1);
     t2 = Thetas(2);
     t3 = Thetas(3);
@@ -14,7 +6,6 @@ function [A60, position, orientation_ZYX] = zadanie_proste(Thetas, dh_parameters
     t5 = Thetas(5);
     t6 = Thetas(6);
 
-    % Macierz transformacji DH
     function A = matrixA(theta, lambda, l, alpha)
         A = [ cos(theta),  -sin(theta)*cos(alpha),   sin(theta)*sin(alpha),  l*cos(theta);
               sin(theta),   cos(theta)*cos(alpha),  -cos(theta)*sin(alpha),  l*sin(theta);
@@ -25,13 +16,13 @@ function [A60, position, orientation_ZYX] = zadanie_proste(Thetas, dh_parameters
     A1  = matrixA(t1, dh_parameters.lambda1, dh_parameters.l1, dh_parameters.alpha1);
     A2  = matrixA(t2, dh_parameters.lambda2, dh_parameters.l2, dh_parameters.alpha2);
     A3  = matrixA(t3, dh_parameters.lambda3, dh_parameters.l3, dh_parameters.alpha3);
-    
     A3e = matrixA(dh_parameters.theta3e, dh_parameters.lambda3e, dh_parameters.l3e, dh_parameters.alpha3e);
-    A4  = matrixA(t4, dh_parameters.lambda4, dh_parameters.l4, dh_parameters.alpha4);
+    
+    A4  = matrixA(t4, 0, dh_parameters.l4, dh_parameters.alpha4);
     A5  = matrixA(t5, dh_parameters.lambda5, dh_parameters.l5, dh_parameters.alpha5);
     A6  = matrixA(t6, dh_parameters.lambda6, dh_parameters.l6, dh_parameters.alpha6);
 
-    % Główna macierz transformacji
+    % Macierz transformacji końcówki (TCP)
     A60 = A1 * A2 * A3 * A3e * A4 * A5 * A6; 
 
     % Wyznaczenie pozycji TCP [X; Y; Z]

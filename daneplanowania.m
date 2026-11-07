@@ -94,8 +94,8 @@ alpha_A = deg2rad(A_DegArray(1)) ; beta_A = deg2rad(A_DegArray(2)); gamma_A = de
 alpha_B = deg2rad(B_DegArray(1)) ; beta_B = deg2rad(B_DegArray(2)); gamma_B = deg2rad(B_DegArray(3));
 
 
-orientation_matrix_A = matrixZYX(A_DegArray(1),A_DegArray(2),A_DegArray(3));
-orientation_matrix_B = matrixZYX(B_DegArray(1),B_DegArray(2),B_DegArray(3));
+orientation_matrix_A = matrixZYX(alpha_A,beta_A,gamma_A);
+orientation_matrix_B = matrixZYX(alpha_B,beta_B,gamma_B);
 
 
 % Wypisanie wartosci 

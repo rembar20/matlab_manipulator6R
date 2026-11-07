@@ -1,4 +1,4 @@
-function [OptymalnaKonfiguracja_p1, OptymalnaKonfiguracja_p2, TablicaNazw_p1, TablicaNazw_p2] = wybor_konfiguracji(Thetas_1,Thetas_2)
+function [OptymalnaKonfiguracja_p1, OptymalnaKonfiguracja_p2, TablicaNazw_p1, TablicaNazw_p2, RealThetas_p1, RealThetas_p2] = wybor_konfiguracji(Thetas_1,Thetas_2)
 %wybór konfiguracji
 
 %min przemieszczeñ w parach kinematycznych

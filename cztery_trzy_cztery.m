@@ -8,18 +8,21 @@ tb = t2-t1;
 tw = tk-t2;
 k = size(q_A);
 n = k(2);
-tvec_1 = t0:0.01:tr;
+tvec_1 = t0:0.01:t1;
 tau_t1 = (tvec_1-t0)/(t1-t0);
 tvec_2 = t1:0.01:t2;
 tau_t2 = (tvec_2-t1)/(t2-t1);
 tvec_3 = t2:0.01:tk;
 tau_t3 = (tvec_3-t2)/(tk-t2);
+tau_calk = [tvec_1,tvec_2,tvec_3]/tk;
+
+q_tau_w434 = zeros(size(tau_calk,2),n);
 
 q_R = (1/4)*(q_B+3*q_A);
 q_W = (1/4)*(3*q_B+q_A);
 %Macierz 14x14 
 A = [1, 0,    0,       0,      0,       0, 0,     0,      0,      0, 0,     0,      0,      0;  %w1
-     0, 0,    0,       0,      0,       0, 0,     0,      0,      0, 1,     1,      1,      1;  %w2
+     0, 0,    0,       0,      0,       0, 0,     0,      0,      1, 1,     1,      1,      1;  %w2
      0 1/tr   0,       0,      0,       0, 0,     0,      0,      0, 0,     0,      0,      0;  %w3
      0, 0     0,       0,      0,       0, 0,     0,      0,      0, 1/tw,  2/tw,   3/tw,   4/tw; %w4
      0, 0,    2/tr^2,  0,      0,       0, 0,     0,      0,      0, 0,     0,      0,      0;  %w5
@@ -70,12 +73,12 @@ ddq_w4_2 = (2*a32+6*a33*tau_t3+12*a34*tau_t3.^2)/tw^2;
 index_R = size(tau_t1,2); %indeksy uzywane do wziecia danych z tablicy calkowitej by zaznaczyc punkty zmiany wielomianow
 index_W = size(tau_t1,2)+size(tau_t2,2); % jako ze wielomiany sa sklejane to punktem przegeicia bedzie ostatni punkt w tablicy
 
-tau_calk = [tvec_1,tvec_2,tvec_3]; %zakres 
+%zakres 
 q_calk = [q_w4_1, q_w3, q_w4_2];
 dq_calk = [dq_w4_1, dq_w3, dq_w4_2];
 ddq_calk = [ddq_w4_1, ddq_w3, ddq_w4_2];
 
-q_tau_w434 = q_calk(:,i);
+q_tau_w434 (:,i) = q_calk(:);
 rys_wykresy(tau_calk,q_calk,dq_calk,ddq_calk,i,7,434)
  %Rysowanie wykresow
     if i <= 3

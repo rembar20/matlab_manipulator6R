@@ -1,10 +1,14 @@
-NazwyKonfiguracji = { ...
-    'Set 1: \it\theta_{1_1} \rightarrow \it\theta_{2_1} \rightarrow \it\theta_{3_1} \rightarrow \it\theta_{4_1} \rightarrow \it\theta_{5_1} \rightarrow \it\theta_{6_1}', ... % Kolumna 1 (Wrist 1)
-    'Set 1: \it\theta_{1_1} \rightarrow \it\theta_{2_1} \rightarrow \it\theta_{3_1} \rightarrow \it\theta_{4_2} \rightarrow \it\theta_{5_2} \rightarrow \it\theta_{6_2}', ... % Kolumna 2 (Wrist 2)
-    'Set 2: \it\theta_{1_1} \rightarrow \it\theta_{2_3} \rightarrow \it\theta_{3_2} \rightarrow \it\theta_{4_1} \rightarrow \it\theta_{5_1} \rightarrow \it\theta_{6_1}', ... % Kolumna 3 (Wrist 1)
-    'Set 2: \it\theta_{1_1} \rightarrow \it\theta_{2_3} \rightarrow \it\theta_{3_2} \rightarrow \it\theta_{4_2} \rightarrow \it\theta_{5_2} \rightarrow \it\theta_{6_2}', ... % Kolumna 4 (Wrist 2)
-    'Set 3: \it\theta_{1_2} \rightarrow \it\theta_{2_2} \rightarrow \it\theta_{3_1} \rightarrow \it\theta_{4_1} \rightarrow \it\theta_{5_1} \rightarrow \it\theta_{6_1}', ... % Kolumna 5 (Wrist 1)
-    'Set 3: \it\theta_{1_2} \rightarrow \it\theta_{2_2} \rightarrow \it\theta_{3_1} \rightarrow \it\theta_{4_2} \rightarrow \it\theta_{5_2} \rightarrow \it\theta_{6_2}', ... % Kolumna 6 (Wrist 2)
-    'Set 4: \it\theta_{1_2} \rightarrow \it\theta_{2_4} \rightarrow \it\theta_{3_2} \rightarrow \it\theta_{4_1} \rightarrow \it\theta_{5_1} \rightarrow \it\theta_{6_1}', ... % Kolumna 7 (Wrist 1)
-    'Set 4: \it\theta_{1_2} \rightarrow \it\theta_{2_4} \rightarrow \it\theta_{3_2} \rightarrow \it\theta_{4_2} \rightarrow \it\theta_{5_2} \rightarrow \it\theta_{6_2}'  ... % Kolumna 8 (Wrist 2)
-};
+[Realq_R,~] = CzyRzeczywiste(q_R);
+[Realq_W,~] = CzyRzeczywiste(q_W);
+TablicaPrzemieszczen = zeros(size(Realq_R,2),size(Realq_W,2));
+        for i = 1:size(Realq_R,2)
+            for j = 1:size(Realq_W,2)
+            Przemieszczenie_AR = sum(abs(RealThetasP_A(:,konfiguracja_A) - Realq_R(:,i)));
+            Przemieszczenie_RW = sum(abs(Realq_R(:,i) - Realq_W(:,j)));
+            Przemieszczenie_WB = sum(abs(Realq_W(:,j) - RealThetasP_B(:,konfiguracja_B)));
+            TablicaPrzemieszczen(i,j) = Przemieszczenie_AR + Przemieszczenie_RW + Przemieszczenie_WB;
+            end
+        end
+        [MinKolumn, wekWierszy] = min(TablicaPrzemieszczen); %Zwraca wektor najmniejszych wartosci w kolumnach (MinKolumn) i wektor ich wierszy
+        [MinWartosc, optymP_W] =   min(MinKolumn); % Zwraca Minimalna wartosc z calej tablicy oraz indeks kolumny w ktorej ta wartosc sie znajduje
+        optymP_R = wekWierszy(optymP_W);
