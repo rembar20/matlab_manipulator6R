@@ -4,7 +4,7 @@ clc
 disp('Projekt 1')
 disp('Planowanie trajektorii manipulatora o strukturze szeregowej 6R')
 disp('Wykonany przez studentów grupy 13A4 P02')
-%disp('Bartosz Remin, Szymon Grela, Bartłomiej Sasin, Maciej Pitala')
+disp('Bartosz Remin, Szymon Grela, Bartłomiej Sasin, Maciej Pitala')
 disp('Wcisnij enter')
 pause
 
