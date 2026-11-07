@@ -79,6 +79,9 @@ dq_calk = [dq_w4_1, dq_w3, dq_w4_2];
 ddq_calk = [ddq_w4_1, ddq_w3, ddq_w4_2];
 
 q_tau_w434 (:,i) = q_calk(:);
+q_tau_w434_R(:,i) = q_calk(index_R);
+q_tau_w434_W(:,i) = q_calk(index_W);
+
 rys_wykresy(tau_calk,q_calk,dq_calk,ddq_calk,i,7,434)
  %Rysowanie wykresow
     if i <= 3
@@ -125,3 +128,10 @@ rys_wykresy(tau_calk,q_calk,dq_calk,ddq_calk,i,7,434)
     hold off
 
 end
+        % zmienne potrzebne do rysowania punktow R i W na torze TCP
+        t_R_tcp = tr; %Czas w ktorym TCP osiaga punk R
+        t_W_tcp = tw; % Czas w tkroym TCP osiaga punkt W
+        q_R_tcp = q_tau_w434_R; % Wartosci katow przegubow dla osiagnietego punktu R
+        q_W_tcp = q_tau_w434_W; % Wartosci katow przegubow dla osiagnietego punktu W
+        t_tcp = tau_calk*tk; % Wektor czasu ruchu (w dziedzinie czasu, nie znormalizowanym tau)
+        q_tau_tcp = q_tau_w434;  % Tablica wartosci katow przegubow dla kazdego kroku czasowego3

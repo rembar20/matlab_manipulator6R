@@ -37,3 +37,6 @@ for i = 1:n
 %Rysowanie wykresow
 rys_wykresy(tau,q_tau,dq_tau,ddq_tau,i,3,5) %  WektorCzasu, WektorQ, Wektor_dQ, Wektor_ddQ, i, num_okna, st_wielomianu
 end
+
+        t_tcp = t;  % czas na os X wykresu TCP
+        q_tau_tcp = q_tau_w5;   % wartosci theta1:6 dla wykresow TCP

@@ -25,9 +25,9 @@ while(1)
         num_okna = 1;
         wielomian_3stopien % figure 1,2
         
+        rysuj_RW = false;
         ilosc_zadan_odwrotnych = 2; % 2 wszedize oprocz w7stp - tam = 4
-        t_tcp = t; % czas na os X wykresu TCP
-        q_tau_tcp = q_tau_w3; % wartosci theta1:6 dla wykresow TCP
+
         typ_wielomianu = 3; % typ wielomianu (pomocnicza dla wykresow TCP)
         num_okna_tcp = num_okna + 10; % ustaw okna, offset 10 zeby sie nie najechaly z niczym innym (dla kolejnych offset o 10 wiekszy)
         trajektoria_TCP %wywolaj rysowanie trajektorii TCP
@@ -35,10 +35,10 @@ while(1)
     elseif(user_input == 2) %w 5 stp
         num_okna = 3;
         wielomian_5stopien % figure 3,4
-        
+
+        rysuj_RW = false;
         ilosc_zadan_odwrotnych = 2;
-        t_tcp = t;
-        q_tau_tcp = q_tau_w5;
+
         typ_wielomianu = 5;
         num_okna_tcp = num_okna + 20;
         trajektoria_TCP
@@ -49,9 +49,9 @@ while(1)
         q_W = []; % potrzebne, zeby moc uruchamiac wielomian_7_stopein bez definiowania nowych punktow za kazdym razem
         wielomian_7stopien % figure 5,6
         
+        rysuj_RW = true;
+
         ilosc_zadan_odwrotnych = 4;
-        t_tcp = t;
-        q_tau_tcp = q_tau_w7;
         typ_wielomianu = 7;
         num_okna_tcp = num_okna + 30;
         trajektoria_TCP
@@ -60,9 +60,10 @@ while(1)
         num_okna = 7;
         cztery_trzy_cztery % figure 7,8
         
+        rysuj_RW = true;
+
         ilosc_zadan_odwrotnych = 2;
-        t_tcp = tau_calk*tk;
-        q_tau_tcp = q_tau_w434;
+
         typ_wielomianu = 434;
         num_okna_tcp = num_okna + 40;
         trajektoria_TCP

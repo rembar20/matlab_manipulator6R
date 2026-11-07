@@ -89,6 +89,8 @@ for i = 1:n
     %te zmienne są po to, zeby na wykresach moc zaznaczyc PUNKTY tr, tw i
     %jakie wartosci sa dla tr i tw
     q_tau_w7(:,i) = q_tau(:);
+    q_tau_w7_R(:,i) = Realq_R(i,konfiguracja_R);
+    q_tau_w7_W(:,i) = Realq_W(i,konfiguracja_W);
 
     % --- WYKRESY ---
 
@@ -138,11 +140,11 @@ for i = 1:n
 
 end
 
-
-figure(5)
-set(gcf,"Name", "W7Stp - Ramie","NumberTitle", "off")
-sgtitle('Trajektorie ramienia (1-3) - Wielomian 7 stopnia')
-
-figure(6)
-set(gcf,"Name", "W7Stp - Nadgarstek","NumberTitle", "off")
-sgtitle('Trajektorie nadgarstka (4-6) - Wielomian 7 stopnia')
+% zmienne potrzebne do rysowania punktow R i W na torze TCP
+        
+        t_R_tcp = tr; % Czas w ktorym TCP osiaga punk R
+        t_W_tcp = tw; % Czas w tkroym TCP osiaga punkt W
+        q_R_tcp = q_tau_w7_R; % Wartosci katow przegubow dla osiagnietego punktu R
+        q_W_tcp = q_tau_w7_W; % Wartosci katow przegubow dla osiagnietego punktu W
+        t_tcp = t; % Wektor czasu ruchu (w dziedzinie czasu, nie znormalizowanym tau)
+        q_tau_tcp = q_tau_w7; % Tablica wartosci katow przegubow dla kazdego kroku czasowego3

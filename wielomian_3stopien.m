@@ -30,3 +30,6 @@ q_tau_w3(:,i) = q_tau(:); %inicjalizacja tablicy w której zawarte są wszystkie
 %Rysowanie wykresow
 rys_wykresy(tau,q_tau,dq_tau,ddq_tau,i,1,3) %  WektorCzasu, WektorQ, Wektor_dQ, Wektor_ddQ, i, num_okna, st_wielomianu
 end
+
+        t_tcp = t; % czas na os X wykresu TCP
+        q_tau_tcp = q_tau_w3; % wartosci theta1:6 dla wykresow TCP
