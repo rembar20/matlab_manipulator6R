@@ -12,10 +12,10 @@
 % - Trajektorię XYZ (każde osobno) (done)
 % - Tor (wykres przestrzenny) (done)
 % - min i max na wykresach (done)
-% - Punkty R i W na wykresach TCP
-% - Przestrzen robocza
-% - Sprawdzanie czy punkty mieszcza sie w przestrzeni roboczej
-% - Menu wyboru konfiguracji
+% - Punkty R i W na wykresach TCP !!!
+% - Przestrzen robocza !!!
+% - Sprawdzanie czy punkty mieszcza sie w przestrzeni roboczej !!!
+% - Menu wyboru konfiguracji (done)
 
 clear
 close all

@@ -12,7 +12,11 @@ switch typ_wielomianu
         case 434
             tytul_okna = "W434";
             tytul_wykresu = "Wielomiany 4-3-4";
-    end
+end
+
+PrzyciskiMenuKonfiguracji = {NazwyKonfiguracji_pA,NazwyKonfiguracji_pB,NazwyKonfiguracji_pR,NazwyKonfiguracji_pW};
+TytulyMenuKonfiguracji = ["A";"B";"R";"W"];
+konfiguracja_out = [konfiguracja_A,konfiguracja_B,konfiguracja_R,konfiguracja_W];
 
 ilosc_punktow = size(q_tau_tcp, 1);
 punkty_TCP = zeros(ilosc_punktow, 3);
@@ -93,6 +97,79 @@ while(1)
         grid on; 
         xlabel('t [s]'); ylabel('Z [mm]');
         title('Trajektoria TCP z(t)');
+
+        case 4 % Menu wyboru konfiguracji
+
+        for i_konfiguracji = 1:ilosc_zadan_odwrotnych
+        opcje_wyboru = PrzyciskiMenuKonfiguracji{i_konfiguracji};
+        size(opcje_wyboru)
+        
+            while(1)
+            Menu_Konfiguracji = menu("Wybierz konfiguracje dla wynikow zadania odwrotnego punktu: " + TytulyMenuKonfiguracji(i_konfiguracji), opcje_wyboru{:}, "Anuluj");
+
+                switch Menu_Konfiguracji
+                    case size(opcje_wyboru,1)+1 %ostatni przycisk to zawsze bedzie wyjscie z petli
+                    disp("Anulowano zmiane konfiguracji, pozostaje przy SET" + num2str(konfiguracja_out(i_konfiguracji)))
+                    break;
+                    otherwise
+                    konfiguracja_out(i_konfiguracji) = Menu_Konfiguracji;
+                    disp("Zmiana aktualnej konfiguracji rozwiazania zadania odwrotnego dla punktu " + TytulyMenuKonfiguracji(i_konfiguracji) + " na SET " + num2str(konfiguracja_out(i_konfiguracji)))
+                    break;
+                end
+            end
+        end
+        
+        konfiguracja_A = konfiguracja_out(1);
+        konfiguracja_B = konfiguracja_out(2);
+        konfiguracja_R = konfiguracja_out(3);
+        konfiguracja_W = konfiguracja_out(4);
+        q_A =  RealThetasP_A(:,konfiguracja_A)'; %przepisanie wybranego rozwiazania zadania odwrotnego kinematyki do zmiennej pomocniczej 
+        q_B = RealThetasP_B(:,konfiguracja_B)';
+        
+        switch typ_wielomianu
+        case 3
+            num_okna = 1;
+            wielomian_3stopien % figure 1,2
+        
+            
+            t_tcp = t;
+            q_tau_tcp = q_tau_w3;
+            num_okna_tcp = num_okna + 10;
+            trajektoria_TCP
+            return
+        case 5
+            num_okna = 3;
+            wielomian_5stopien % figure 3,4
+        
+            
+            t_tcp = t;
+            q_tau_tcp = q_tau_w5;
+            num_okna_tcp = num_okna + 20;
+            trajektoria_TCP
+            return
+        case 7
+            num_okna = 5;
+    
+            wielomian_7stopien % figure 5,6
+            
+            t_tcp = t;
+            q_tau_tcp = q_tau_w7;
+           typ_wielomianu = 7;
+            num_okna_tcp = num_okna + 30;
+            trajektoria_TCP
+            return
+
+         case 434
+             num_okna = 7;
+             cztery_trzy_cztery % figure 7,8
+    
+             t_tcp = tau_calk*tk;
+             q_tau_tcp = q_tau_w434;
+             typ_wielomianu = 434;
+             num_okna_tcp = num_okna + 40;
+             trajektoria_TCP
+             return
+        end
 
         case 5 % Powrot do wyboru wielomianu
         break;
