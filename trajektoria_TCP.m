@@ -42,32 +42,32 @@ while(1)
         case 1 % 3D
 
         figure(num_okna_tcp); %wykres 3d
-        set(gcf,"Name", tytul_okna + "_Trajektora TCP - 3D","NumberTitle", "off")
-        sgtitle("Trajektorie TCP - 3D -  " + tytul_wykresu + " - Konfiguracja A: Set  " + num2str(konfiguracja_A) + " B: Set  " + num2str(konfiguracja_B)  )
-        plot3(punkty_TCP(:,1), punkty_TCP(:,2), punkty_TCP(:,3), 'r-', 'LineWidth', 2);
-        grid on;
-        xlabel('X [mm]'); ylabel('Y [mm]'); zlabel('Z [mm]');
-        hold on
-        plot3(p_A(1),p_A(2),p_A(3),'co', MarkerSize=6, MarkerFaceColor='c');
-        text(p_A(1),p_A(2),p_A(3),"  P_A [" + num2str(punkty_TCP(1,1)) + " " +  num2str(punkty_TCP(1,2)) + " " + num2str(punkty_TCP(1,3)) + "]" , 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'c', 'FontWeight', 'bold')
-
-        plot3(p_B(1),p_B(2),p_B(3),'mo', MarkerSize=6, MarkerFaceColor='m');
-        text(p_B(1),p_B(2),p_B(3),"  P_B [" + num2str(punkty_TCP(ilosc_punktow,1)) + " " +  num2str(punkty_TCP(ilosc_punktow,2)) + " " + num2str(punkty_TCP(ilosc_punktow,3)) + "]", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'm', 'FontWeight', 'bold')
+        set(gcf,"Name", tytul_okna + "_Trajektora TCP - 3D","NumberTitle", "off") %ustaw nazwe okna
+        sgtitle("Trajektorie TCP - 3D -  " + tytul_wykresu + " - Konfiguracja A: Set  " + num2str(konfiguracja_A) + " B: Set  " + num2str(konfiguracja_B)  ) %ustaw tytul
+        plot3(punkty_TCP(:,1), punkty_TCP(:,2), punkty_TCP(:,3), 'r-', 'LineWidth', 2); %rysuj wykres 3D
+        grid on; % wlacz siatke
+        xlabel('X [mm]'); ylabel('Y [mm]'); zlabel('Z [mm]'); %opis osi XYZ
+        hold on % dodawanie punktow
+        plot3(p_A(1),p_A(2),p_A(3),'co', MarkerSize=6, MarkerFaceColor='c'); %Punkt A
+        text(p_A(1),p_A(2),p_A(3),"  P_A [" + num2str(punkty_TCP(1,1)) + ", " +  num2str(punkty_TCP(1,2)) + ", " + num2str(punkty_TCP(1,3)) + "]" , 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'c', 'FontWeight', 'bold')
+        % ^ opis punku A
+        plot3(p_B(1),p_B(2),p_B(3),'mo', MarkerSize=6, MarkerFaceColor='m'); % Punkt B
+        text(p_B(1),p_B(2),p_B(3),"  P_B [" + num2str(punkty_TCP(ilosc_punktow,1)) + ", " +  num2str(punkty_TCP(ilosc_punktow,2)) + ", " + num2str(punkty_TCP(ilosc_punktow,3)) + "]", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'm', 'FontWeight', 'bold')
         hold off
-
-        if(rysuj_RW)
+        % ^ opis punktu B 
+        if(rysuj_RW) % Gdy flaga rysujRW jest on to zaznacz punkty pomocnicze R i W
         hold on
         plot3(p_R(1),p_R(2),p_R(3),'bo', MarkerSize=6, MarkerFaceColor='b');
-        text(p_R(1),p_R(2),p_R(3),"  P_R", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'b', 'FontWeight', 'bold')
+        text(p_R(1),p_R(2),p_R(3),"  P_R [" + num2str(p_R(1)) + ", " +  num2str(p_R(2)) + ", " + num2str(p_R(3)) + "]", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'b', 'FontWeight', 'bold')
 
         plot3(p_W(1),p_W(2),p_W(3),'go', MarkerSize=6, MarkerFaceColor='g');
-        text(p_W(1),p_W(2),p_W(3),"  P_W ", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'g', 'FontWeight', 'bold')
+        text(p_W(1),p_W(2),p_W(3),"  P_R [" + num2str(p_W(1)) + ", " +  num2str(p_W(2)) + ", " + num2str(p_W(3)) + "]", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'g', 'FontWeight', 'bold')
         hold off
         end
 
 
         case 2 % Rzuty X-Y, X-Z, Y-Z
-
+        % --- X-Y ---
         figure(num_okna_tcp+1);
         set(gcf,"Name", tytul_okna + "_Trajektora TCP - 2D","NumberTitle", "off")
         sgtitle(tytul_wykresu);
@@ -77,19 +77,72 @@ while(1)
         xlabel('X [mm]'); ylabel('Y [mm]');
         title('Trajektoria TCP x-y');
 
+        hold on % dodawanie punktow
+        plot(p_A(1),p_A(2),'co', MarkerSize=6, MarkerFaceColor='c'); %Punkt A
+        text(p_A(1),p_A(2),"  P_A" , 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'c', 'FontWeight', 'bold')
+        % ^ opis punku A ^
+        plot(p_B(1),p_B(2),'co', MarkerSize=6, MarkerFaceColor='c'); %Punkt A
+        text(p_B(1),p_B(2),"  P_B" , 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'c', 'FontWeight', 'bold')
+        hold off
+        % ^ opis punktu B ^
+        if(rysuj_RW) % Gdy flaga rysujRW jest on to zaznacz punkty pomocnicze R i W
+        hold on
+        plot(p_R(1),p_R(2),'go', MarkerSize=6, MarkerFaceColor='g');
+        text(p_R(1),p_R(2),"  P_R", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'g', 'FontWeight', 'bold')
+
+        plot(p_W(1),p_W(2),'bo', MarkerSize=6, MarkerFaceColor='b');
+        text(p_W(1),p_W(2),"  P_R", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'b', 'FontWeight', 'bold')
+        hold off
+        end
+        %%% --- X-Z ---
         subplot(1,3,2) %wykres 2d x-z
         plot(punkty_TCP(:,1), punkty_TCP(:,3), 'r-', 'LineWidth', 2)
         grid on; 
         xlabel('X [mm]'); ylabel('Z [mm]');
         title('Trajektoria TCP x-z');
 
+        hold on % dodawanie punktow
+        plot(p_A(1),p_A(3),'co', MarkerSize=6, MarkerFaceColor='c'); %Punkt A
+        text(p_A(1),p_A(3),"  P_A" , 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'c', 'FontWeight', 'bold')
+        % ^ opis punku A ^
+        plot(p_B(1),p_B(3),'co', MarkerSize=6, MarkerFaceColor='c'); %Punkt A
+        text(p_B(1),p_B(3),"  P_B" , 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'c', 'FontWeight', 'bold')
+        hold off
+        % ^ opis punktu B ^
+        if(rysuj_RW) % Gdy flaga rysujRW jest on to zaznacz punkty pomocnicze R i W
+        hold on
+        plot(p_R(1),p_R(3),'go', MarkerSize=6, MarkerFaceColor='g');
+        text(p_R(1),p_R(3),"  P_R", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'g', 'FontWeight', 'bold')
+
+        plot(p_W(1),p_W(3),'bo', MarkerSize=6, MarkerFaceColor='b');
+        text(p_W(1),p_W(3),"  P_R", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'b', 'FontWeight', 'bold')
+        hold off
+        end
+        % --- Y-Z ---
         subplot(1,3,3) %wykres 2d y-z
         plot(punkty_TCP(:,2), punkty_TCP(:,3), 'r-', 'LineWidth', 2)
         grid on; 
         xlabel('Y [mm]'); ylabel('Z [mm]');
         title('Trajektoria TCP y-z');
+        
 
-            
+        hold on % dodawanie punktow
+        plot(p_A(2),p_A(3),'co', MarkerSize=6, MarkerFaceColor='c'); %Punkt A
+        text(p_A(2),p_A(3),"  P_A" , 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'c', 'FontWeight', 'bold')
+        % ^ opis punku A ^
+        plot(p_B(2),p_B(3),'co', MarkerSize=6, MarkerFaceColor='c'); %Punkt A
+        text(p_B(2),p_B(3),"  P_B" , 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'c', 'FontWeight', 'bold')
+        hold off
+        % ^ opis punktu B ^
+        if(rysuj_RW) % Gdy flaga rysujRW jest on to zaznacz punkty pomocnicze R i W
+        hold on
+        plot(p_R(2),p_R(3),'go', MarkerSize=6, MarkerFaceColor='g');
+        text(p_R(2),p_R(3),"  P_R", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'g', 'FontWeight', 'bold')
+
+        plot(p_W(2),p_W(3),'bo', MarkerSize=6, MarkerFaceColor='b');
+        text(p_W(2),p_W(3),"  P_R", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'b', 'FontWeight', 'bold')
+        hold off
+        end
 
         case 3 % od czasu  
 
@@ -102,17 +155,49 @@ while(1)
         xlabel('t  [s]'); ylabel('Y [mm]');
         title('Trajektoria TCP x(t)');
 
+        if(rysuj_RW) % Gdy flaga rysujRW jest on to zaznacz punkty pomocnicze R i W
+        hold on
+        plot(t_R_tcp,p_R(1),'go', MarkerSize=6, MarkerFaceColor='g');
+        text(t_R_tcp,p_R(1),"  P_{Rx}", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'g', 'FontWeight', 'bold')
+
+        plot(t_W_tcp,p_W(1),'bo', MarkerSize=6, MarkerFaceColor='b');
+        text(t_W_tcp,p_W(1),"  P_{Rx}", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'b', 'FontWeight', 'bold')
+        hold off
+        end
+
         subplot(1,3,2) %wykres 2d y(t)
         plot(t_tcp, punkty_TCP(:,2),  'r-', 'LineWidth', 2)
         grid on; 
         xlabel('t [s]'); ylabel('Z [mm]');
         title('Trajektoria TCP y(t)');
 
+
+        if(rysuj_RW) % Gdy flaga rysujRW jest on to zaznacz punkty pomocnicze R i W
+        hold on
+        plot(t_R_tcp,p_R(2),'go', MarkerSize=6, MarkerFaceColor='g');
+        text(t_R_tcp,p_R(2),"  P_{Ry}", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'g', 'FontWeight', 'bold')
+
+        plot(t_W_tcp,p_W(2),'bo', MarkerSize=6, MarkerFaceColor='b');
+        text(t_W_tcp,p_W(2),"  P_{Ry}", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'b', 'FontWeight', 'bold')
+        hold off
+        end
+
         subplot(1,3,3) %wykres 2d z(t)
         plot(t_tcp,  punkty_TCP(:,3), 'r-', 'LineWidth', 2)
         grid on; 
         xlabel('t [s]'); ylabel('Z [mm]');
         title('Trajektoria TCP z(t)');
+
+
+        if(rysuj_RW) % Gdy flaga rysujRW jest on to zaznacz punkty pomocnicze R i W
+        hold on
+        plot(t_R_tcp,p_R(3),'go', MarkerSize=6, MarkerFaceColor='g');
+        text(t_R_tcp,p_R(3),"  P_{Rz}", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'g', 'FontWeight', 'bold')
+
+        plot(t_W_tcp,p_W(3),'bo', MarkerSize=6, MarkerFaceColor='b');
+        text(t_W_tcp,p_W(3),"  P_{Rz}", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'b', 'FontWeight', 'bold')
+        hold off
+        end
 
         case 4 % Menu wyboru konfiguracji
 

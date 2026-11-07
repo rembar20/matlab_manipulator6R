@@ -5,11 +5,10 @@ matrixZYX = [
     sin(alpha)*cos(beta),  sin(alpha)*sin(beta)*sin(gamma) + cos(alpha)*cos(gamma),  sin(alpha)*sin(beta)*cos(gamma) - cos(alpha)*sin(gamma);
    -sin(beta),          cos(beta)*sin(gamma),                             cos(beta)*cos(gamma)];
 end
-%% 
-%dane planowania
-%z klawiatury
-%czas
+
+
 t0= 0;
+%Definicja domyslnych wartosci
 defA = [100,200,300,0,0,0]; %x,y,z, alpha,beta,gamma
 defB = [200,250,230,15,45,60]; %uzywane by zadeklarowac stale na gorze programu i nie musiec ich zmieniac w akzdym jego punkcie
 def_tk = 1;
@@ -19,7 +18,7 @@ def_tk = 1;
     odp = questdlg('Czy chcesz uzyc podstawowych wartosci punktów A i B oraz tk?', ... %otworz okno dialogowe z zapytaniem o wartosci podstawowe
         'Zapytanie', ...
         "Tak","Nie", ... %2 odpowiedzi
-        'Tak'); % Podstawowa wartosc (zaznaczona przy otwarciu okna
+        'Tak'); % Podstawowa wartosc (zaznaczona przy otwarciu okna)
 %--- WPISYWANIE WLASNYCH DANYCH ---
     if(odp == "Nie") %jezeli wybrano manualne wpisywanie wartosci
         [pozycja, orientacja] = DanePunktuGlownego('A'); %wywolaj funkcje dla punktu A
@@ -31,8 +30,8 @@ def_tk = 1;
         deg_A_beta = orientacja(2);
         deg_A_gamma = orientacja(3);
         else
-        msgbox("Anulowano wprowadzanie wartosci, przyjmuje wartosci podstawowe punktu A") %jezeli zamknieto okno/wcisnieto przycisk anuluj to uzyj podstawowych wartosci
-
+        msgbox("Anulowano wprowadzanie wartosci, przyjmuje wartosci podstawowe punktu A", 'Informacja', 'help') %jezeli zamknieto okno/wcisnieto przycisk anuluj to uzyj podstawowych wartosci
+        pause(0.5) % pauza zeby mozna bylo przeczytac informacje
             p_A_x = defA(1); p_A_y = defA(2); p_A_z = defA(3);
             deg_A_alpha = defA(4) ; deg_A_beta  = defA(5)  ;deg_A_gamma = defA(6);
         end
@@ -46,8 +45,8 @@ def_tk = 1;
         deg_B_beta = orientacja(2);
         deg_B_gamma = orientacja(3);
         else
-        msgbox("Anulowano wprowadzanie wartosci, przyjmuje wartosci podstawowe punktu B")
-
+        msgbox("Anulowano wprowadzanie wartosci, przyjmuje wartosci podstawowe punktu B", 'Informacja', 'help') %jezeli zamknieto okno/wcisnieto przycisk anuluj to uzyj podstawowych wartosci
+        pause(0.5)
             p_B_x = defB(1); p_B_y = defB(2); p_B_z = defB(3);
             deg_B_alpha = defB(4) ; deg_B_beta  = defB(5)  ;deg_B_gamma = defB(6);
         end
@@ -55,13 +54,15 @@ def_tk = 1;
         tk = tk_input; %jako ze tk_input zwraca tylko jedna liczbe najpierw przypisz do finalnej zmiennej
         if(isnan(tk)) %potem sprawdz czy ta zmienna nie jest pusta
             tk = def_tk; %jak jest pusta to przypisz default wartosc
-            msgbox("Anulowano wprowadzanie wartosci, przyjmuje wartosci podstawowe czasu tk")
+        msgbox("Anulowano wprowadzanie wartosci, przyjmuje wartosci podstawowe czasu tk", 'Informacja', 'help')
+        pause(0.5);
         end 
     % --- UZYWANIE WARTOSCI PODSTAWOWYCH ---
 
     else %jezeli wybrano wartosci podstawowe/zamknieto okno
         if(odp ~= "Tak") %jezeli zamknieto okno
-        msgbox("Zamknieto okno, uzywanie wartosci podstawowych")
+        msgbox("Zamknieto okno, uzywanie wartosci podstawowych","Informacja", 'help')
+        pause(0.5)
         end
     %ustaw wartosci podstawowe:
     %WARTOSCI PODSTAWOWE DEKLARACJA NA GORZE PLIKU
@@ -119,17 +120,13 @@ disp("Przyjete dane:")
     end
      fprintf('\n') % nowa linia
     disp("Czas ruchu tk = " + num2str(tk));
+    fprintf('\n') % nowa linia
     %pause(1); %pauza na 3 sekundy, zeby mozna bylo zobaczyc ze cos sie stalo w konsoli
 
 %wyznaczenie macierzy orientacji w po³o¿eniu A i B
 disp("Macierz orientacji A:")
 disp(num2str(orientation_matrix_A))
+fprintf('\n') % nowa linia
 disp("Macierz orientacji B:")
 disp(num2str(orientation_matrix_B))
-%czyszczenie zmiennych pomocniczych z tej funkcji (kazda jest albo zawarta
-%w innej zmiennej lub nie jest juz potrzebna
-%zmienne sa czyszczone w dwoch celach:
-% ograniczenia zuzycia pamieci RAM oraz zwiekszenia czytelnosci workspace  
-% i jako zmienna do petli for zostaje, zeby nie zuzywac zasobow (i czasu) na ponowna
-% inicjalizacje zmiennej
-clear p_A_x p_A_y p_A_z p_B_x p_B_y p_B_z deg_A_alpha deg_B_alpha deg_A_beta deg_B_beta deg_A_gamma deg_B_gamma pozycja orientacja odp string_array defA defB def_tk
+

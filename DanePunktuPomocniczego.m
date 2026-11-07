@@ -7,11 +7,14 @@ dimension = [1 50]; % Wielkosc okna
 defaultValues = {'Dane nalezy oddzielac przecinkiem! x,y,z','alpha,beta,gamma',''}; %wartosci podstawowe w polu dialogowym
 poprawneDane = false; % Flaga bitowa uzywana w funkcji while
 title = "Parametry punktu przejsciowego numer " + oznaczenie_punktu; % Tytul okna
-aux_Posit = [];
-aux_Orient = []; %inicjalizacje zmiennych
-aux_time = [];
+
 
 while ~poprawneDane %Petla, ktora powoduje ze funkcja niez akonczy sie dopoki nie zostana wpisane poprawne dane
+
+    aux_Posit = []; %inicjalizacje zmiennych
+    aux_Orient = []; % w kazdej petli po to zeby po anulowaniu wpisywania wyniku w 2 probie nie przeslalo zlych danych
+    aux_time = [];
+
     InputValues = inputdlg(ListaNazwDanych, title, dimension, defaultValues); % Otworz okno dialogowe i wpisz odpowiedzi w tablice InputValues
     if(~isempty(InputValues)) % Sprawdz czy COKOLWIEK zostalo wpisane w tablice (jest pusta tylko gdy kliknie sie cancel)
 
@@ -27,7 +30,12 @@ while ~poprawneDane %Petla, ktora powoduje ze funkcja niez akonczy sie dopoki ni
             % Sprawdz czy wpisany czas miesci sie w zakresie t0 do tk 
             % jeżeli tak to:
             
-            disp("Wprowadzone wartości są niepoprawne!") %wyswietl info w konsoli ze wartosci sa niepoprawne  
+            msgbox("Wprowadzone wartosci sa niepoprawne!", 'Ostrzezenie', 'warn') %wyswietl info w konsoli ze wartosci sa niepoprawne  
+            pause(0.5);
+            defaultValues = InputValues; %Ustaw podstawowe wartosci jako te aktualnie wpisane
+        elseif(~PrzestrzenRobocza(aux_Posit)) % sprawdz czy punkt jest w obszarze roboczym
+            msgbox("Wprowadzony punkt jest poza obszarem roboczym!", 'Ostrzezenie', 'warn')
+            pause(0.5);
             defaultValues = InputValues; %Ustaw podstawowe wartosci jako te aktualnie wpisane
         else %jezeli powyzsze warunki sa niespelnione (wartosci sa dobre)
         

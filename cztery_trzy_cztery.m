@@ -130,7 +130,7 @@ rys_wykresy(tau_calk,q_calk,dq_calk,ddq_calk,i,7,434)
 end
         % zmienne potrzebne do rysowania punktow R i W na torze TCP
         t_R_tcp = tr; %Czas w ktorym TCP osiaga punk R
-        t_W_tcp = tw; % Czas w tkroym TCP osiaga punkt W
+        t_W_tcp = tw+tr; % Czas w tkroym TCP osiaga punkt W
         q_R_tcp = q_tau_w434_R; % Wartosci katow przegubow dla osiagnietego punktu R
         q_W_tcp = q_tau_w434_W; % Wartosci katow przegubow dla osiagnietego punktu W
         t_tcp = tau_calk*tk; % Wektor czasu ruchu (w dziedzinie czasu, nie znormalizowanym tau)

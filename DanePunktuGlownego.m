@@ -1,28 +1,35 @@
 function [aux_Posit, aux_Orient] = DanePunktuGlownego(oznaczenie_punktu) %Funkcja otwiera okno w ktorym mozna wpisac dane punktu
+
 ListaNazwDanych = {['Wspolrzedne punktu ' oznaczenie_punktu ' [mm]'], ['Orientacja punktu ' oznaczenie_punktu ' [deg]']}; %Tablica zawierajace dane wyswietlane nad polem dialogowmy
 dimension = [1 50]; % Wielkosc okna 
 defaultValues = {'Dane nalezy oddzielac przecinkiem! x,y,z','alpha,beta,gamma'}; %wartosci podstawowe w polu dialogowym
 poprawneDane = false; % Flaga bitowa uzywana w funkcji while
 title = "Parametry punktu " + oznaczenie_punktu; % Tytul okna
-aux_Posit = []; %inicjalizacje zmiennych
-aux_Orient = [];
 
 while ~poprawneDane %Petla, ktora powoduje ze funkcja niez akonczy sie dopoki nie zostana wpisane poprawne dane
+    aux_Posit = []; %inicjalizacje zmiennych
+    aux_Orient = []; % w kazdej petli po to zeby po anulowaniu wpisywania wyniku w 2 probie nie przeslalo zlych danych
+
     InputValues = inputdlg(ListaNazwDanych, title, dimension, defaultValues);  % Otworz okno dialogowe i wpisz odpowiedzi w tablice InputValues
  
     if(~isempty(InputValues)) % Sprawdz czy COKOLWIEK zostalo wpisane w tablice (jest pusta tylko gdy kliknie sie cancel)
         
         aux_Posit = str2num(InputValues{1}); %Zamien string na wartosc numeryczna
         aux_Orient = str2num(InputValues{2}); % Zamien string na wartosc w stopniach
+        
 
         if(isempty(aux_Posit)   || isempty(aux_Orient) || numel(aux_Posit) ~= 3 || numel(aux_Orient) ~= 3) %Sprawdz nastepujace warunki
             %Isempty() czy wpisano cokolwiek w dana zmienną
             % numel() ~= 3 sprawdz czy ilosc elementow wektora jest inna
             % niż 3, jeżeli tak to:
-            disp("Wprowadzone wartości są niepoprawne!") %wyswietl info w konsoli ze wartosci sa niepoprawne  
+            msgbox("Wprowadzone wartości są niepoprawne!", 'Ostrzezenie', 'warn') %wyswietl info w konsoli ze wartosci sa niepoprawne
+            pause(0.5);
+            defaultValues = InputValues; %Ustaw podstawowe wartosci jako te aktualnie wpisane
+        elseif(~PrzestrzenRobocza(aux_Posit)) % sprawdz czy punkt jest w obszarze roboczym
+            msgbox("Wprowadzony punkt jest poza obszarem roboczym!", 'Ostrzezenie', 'warn')
+            pause(0.5);
             defaultValues = InputValues; %Ustaw podstawowe wartosci jako te aktualnie wpisane
         else %jezeli powyzsze warunki sa niespelnione (wartosci sa dobre)
-        
             disp("Pozycja punktu pomoczniczego " + oznaczenie_punktu) %wyswietl w konsoli informacje na temat punktow
             disp(aux_Posit)
             disp("Orientacja punktu pomocniczego [rad] " + oznaczenie_punktu)
