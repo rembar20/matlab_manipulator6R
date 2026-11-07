@@ -17,7 +17,7 @@ end
 PrzyciskiMenuKonfiguracji = {NazwyKonfiguracji_pA,NazwyKonfiguracji_pB,NazwyKonfiguracji_pR,NazwyKonfiguracji_pW};
 TytulyMenuKonfiguracji = ["A";"B";"R";"W"];
 konfiguracja_out = [konfiguracja_A,konfiguracja_B,konfiguracja_R,konfiguracja_W];
-
+original_config = konfiguracja_out;
 ilosc_punktow = size(q_tau_tcp, 1);
 punkty_TCP = zeros(ilosc_punktow, 3);
 
@@ -44,10 +44,10 @@ while(1)
         xlabel('X [mm]'); ylabel('Y [mm]'); zlabel('Z [mm]');
         hold on
         plot3(p_A(1),p_A(2),p_A(3),'bo', MarkerSize=6, MarkerFaceColor='b');
-        text(p_A(1),p_A(2),p_A(3),"  P_A", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'b', 'FontWeight', 'bold')
+        text(p_A(1),p_A(2),p_A(3),"  P_A [" + num2str(punkty_TCP(1,1)) + " " +  num2str(punkty_TCP(1,2)) + " " + num2str(punkty_TCP(1,3)) + "]" , 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'b', 'FontWeight', 'bold')
 
         plot3(p_B(1),p_B(2),p_B(3),'go', MarkerSize=6, MarkerFaceColor='g');
-        text(p_B(1),p_B(2),p_B(3),"  P_B", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'g', 'FontWeight', 'bold')
+        text(p_B(1),p_B(2),p_B(3),"  P_B [" + num2str(punkty_TCP(ilosc_punktow,1)) + " " +  num2str(punkty_TCP(ilosc_punktow,2)) + " " + num2str(punkty_TCP(ilosc_punktow,3)) + "]", 'VerticalAlignment', 'bottom', 'FontSize', 8, 'Color', 'g', 'FontWeight', 'bold')
         hold off
 
         case 2 % Rzuty X-Y, X-Z, Y-Z
@@ -125,7 +125,7 @@ while(1)
         konfiguracja_W = konfiguracja_out(4);
         q_A =  RealThetasP_A(:,konfiguracja_A)'; %przepisanie wybranego rozwiazania zadania odwrotnego kinematyki do zmiennej pomocniczej 
         q_B = RealThetasP_B(:,konfiguracja_B)';
-        
+
         switch typ_wielomianu
         case 3
             num_okna = 1;
@@ -136,7 +136,7 @@ while(1)
             q_tau_tcp = q_tau_w3;
             num_okna_tcp = num_okna + 10;
             trajektoria_TCP
-            return
+            
         case 5
             num_okna = 3;
             wielomian_5stopien % figure 3,4
@@ -146,7 +146,7 @@ while(1)
             q_tau_tcp = q_tau_w5;
             num_okna_tcp = num_okna + 20;
             trajektoria_TCP
-            return
+            
         case 7
             num_okna = 5;
     
@@ -157,7 +157,7 @@ while(1)
            typ_wielomianu = 7;
             num_okna_tcp = num_okna + 30;
             trajektoria_TCP
-            return
+            
 
          case 434
              num_okna = 7;
@@ -168,9 +168,16 @@ while(1)
              typ_wielomianu = 434;
              num_okna_tcp = num_okna + 40;
              trajektoria_TCP
-             return
+             
         end
 
+        konfiguracja_A = original_config(1);
+        konfiguracja_B = original_config(2);
+        konfiguracja_R = original_config(3);
+        konfiguracja_W = original_config(4);
+        q_A =  RealThetasP_A(:,konfiguracja_A)'; %przepisanie wybranego rozwiazania zadania odwrotnego kinematyki do zmiennej pomocniczej 
+        q_B = RealThetasP_B(:,konfiguracja_B)';
+        return
         case 5 % Powrot do wyboru wielomianu
         break;
     end

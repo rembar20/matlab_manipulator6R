@@ -13,6 +13,7 @@
 % - Tor (wykres przestrzenny) (done)
 % - min i max na wykresach (done)
 % - Punkty R i W na wykresach TCP !!!
+% - Punkty A i B na wykresach TCP (x,y,z 2D nie 3D)
 % - Przestrzen robocza !!!
 % - Sprawdzanie czy punkty mieszcza sie w przestrzeni roboczej !!!
 % - Menu wyboru konfiguracji (done)
