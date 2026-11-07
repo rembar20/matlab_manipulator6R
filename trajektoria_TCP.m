@@ -17,7 +17,6 @@ end
 PrzyciskiMenuKonfiguracji = {NazwyKonfiguracji_pA,NazwyKonfiguracji_pB,NazwyKonfiguracji_pR,NazwyKonfiguracji_pW};
 TytulyMenuKonfiguracji = ["A";"B";"R";"W"];
 konfiguracja_out = [konfiguracja_A,konfiguracja_B,konfiguracja_R,konfiguracja_W];
-original_config = konfiguracja_out;
 ilosc_punktow = size(q_tau_tcp, 1);
 punkty_TCP = zeros(ilosc_punktow, 3);
 
@@ -102,14 +101,13 @@ while(1)
 
         for i_konfiguracji = 1:ilosc_zadan_odwrotnych
         opcje_wyboru = PrzyciskiMenuKonfiguracji{i_konfiguracji};
-        size(opcje_wyboru)
         
             while(1)
             Menu_Konfiguracji = menu("Wybierz konfiguracje dla wynikow zadania odwrotnego punktu: " + TytulyMenuKonfiguracji(i_konfiguracji), opcje_wyboru{:}, "Anuluj");
 
                 switch Menu_Konfiguracji
                     case size(opcje_wyboru,1)+1 %ostatni przycisk to zawsze bedzie wyjscie z petli
-                    disp("Anulowano zmiane konfiguracji, pozostaje przy SET" + num2str(konfiguracja_out(i_konfiguracji)))
+                    disp("Anulowano zmiane konfiguracji punktu " + TytulyMenuKonfiguracji(i_konfiguracji))
                     break;
                     otherwise
                     konfiguracja_out(i_konfiguracji) = Menu_Konfiguracji;
@@ -118,7 +116,10 @@ while(1)
                 end
             end
         end
-        
+
+        %jezeli zmienila sie choc jedna wartosc konfiguracj
+        if(konfiguracja_A ~= konfiguracja_out(1) || konfiguracja_B ~= konfiguracja_out(2) || konfiguracja_R ~= konfiguracja_out(3) || konfiguracja_W ~= konfiguracja_out(4))
+        disp("Zmienila sie minimum jedna konfiguracja, ponowne uruchomienie obliczen dla wybranego wielomianu")
         konfiguracja_A = konfiguracja_out(1);
         konfiguracja_B = konfiguracja_out(2);
         konfiguracja_R = konfiguracja_out(3);
@@ -178,6 +179,8 @@ while(1)
         q_A =  RealThetasP_A(:,konfiguracja_A)'; %przepisanie wybranego rozwiazania zadania odwrotnego kinematyki do zmiennej pomocniczej 
         q_B = RealThetasP_B(:,konfiguracja_B)';
         return
+        end
+
         case 5 % Powrot do wyboru wielomianu
         break;
     end
